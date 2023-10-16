@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 public class Question {
     @Id
     private Integer questionId;
-    @Column
     @ManyToOne
     @JoinColumn(name = "lessonid")
     private Lesson lesson;

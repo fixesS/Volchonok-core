@@ -17,7 +17,6 @@ import java.util.List;
 public class Lesson {
     @Id
     private Integer lessonid;
-    @Column
     @ManyToOne
     @JoinColumn(name = "moduleid")
     private Module module;

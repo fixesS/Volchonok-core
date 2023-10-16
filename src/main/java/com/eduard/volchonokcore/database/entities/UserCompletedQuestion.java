@@ -16,15 +16,14 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "usercourses", schema = "public")
-@IdClass(UserCompletedQuestionId.class)
 public class UserCompletedQuestion {
     @Id
+    private Integer Id;
     @OneToOne
     @JoinColumn(name = "userid")
     private User user;
-    @Id
-    private Integer questionid;
     @OneToMany
-    @JoinColumn(name = "questionid")
+    @PrimaryKeyJoinColumn(name = "questionid")
     private List<Question> questions;
+
 }
