@@ -5,9 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import java.net.InetAddress;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -17,19 +19,20 @@ import java.time.LocalDateTime;
 @Table(name = "sessions", schema = "public")
 public class Session {
     @Id
-    private Integer sessionId;
+    @Column(columnDefinition = "BINARY(16)", name = "sessionuuid")
+    private UUID sessionUuid;
     @OneToOne
     @JoinColumn(name = "userid")
     private User user;
-    @Column
+    @Column(name = "useragent")
     private String userAgent;
     @Column
     private InetAddress ip;
-    @Column
+    @Column(name = "created")
     private LocalDateTime created;
-    @Column
+    @Column(name = "lastrefresh")
     private LocalDateTime lastRefresh;
-    @Column
+    @Column(name = "expiresin")
     private LocalDateTime expiresIn;
 
 
