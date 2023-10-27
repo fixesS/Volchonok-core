@@ -20,13 +20,17 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "users", schema = "public")
-public class User implements UserDetails {
+public class User implements UserDetails {//todo +avatar сохранение +level
     @Id
     @Column(name = "userid")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
     @Column
     private String login;
+    @Column
+    private String avatar;
+    @Column
+    private Integer level;
     @Column
     private String password;
     @Column

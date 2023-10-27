@@ -16,17 +16,15 @@ public class Question {
     @Id
     private Integer questionId;
     @ManyToOne
-    @JoinColumn(name = "lessonid")
-    private Lesson lesson;
+    @JoinColumn(name = "testid")
+    private Test test;
     @Column
     private String text;
+
     @Column
-    private String trueAnswer;
+    private String explanation;
+
     @Column
-    private String falseAnswer1;
-    @Column
-    private String falseAnswer2;
-    @Column
-    private String falseAnswer3;
+    private String answers;
 
 }

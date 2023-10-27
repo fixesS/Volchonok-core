@@ -17,6 +17,11 @@ import java.util.List;
 public class Lesson {
     @Id
     private Integer lessonid;
+
+    @Column(name = "chat_text")
+    private String chatText;
+    @Column(name = "abstract_text")
+    private String abstractText;
     @ManyToOne
     @JoinColumn(name = "moduleid")
     private Module module;

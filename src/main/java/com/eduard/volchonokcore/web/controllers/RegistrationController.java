@@ -29,7 +29,7 @@ import java.net.UnknownHostException;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/auth/registration")
-public class RegistrationController {
+public class RegistrationController {//todo оставить login password - остальное null
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -39,7 +39,7 @@ public class RegistrationController {
 
 
     @PostMapping
-    public ResponseEntity<String> handle(HttpServletRequest request, @RequestBody RegistrationModel registrationModel) throws UnknownHostException {
+    public ResponseEntity<String> handle(HttpServletRequest request, @Validated @RequestBody RegistrationModel registrationModel) throws UnknownHostException {
         String userAgent = request.getHeader("User-Agent");
         String ip_address = request.getRemoteAddr();
         GsonParser gsonParser = new GsonParser();
@@ -48,6 +48,10 @@ public class RegistrationController {
         ApiResponse response;
         log.info(registrationModel.toString());
         try {
+            int coins = 0;
+            if(registrationModel.getCoins()!=null){
+                coins = Integer.valueOf(registrationModel.getCoins());
+            }
             user = User.builder()
                     .login(registrationModel.getLogin())
                     .password(passwordEncoder.encode(registrationModel.getPassword()))
@@ -56,11 +60,12 @@ public class RegistrationController {
                     .phone(registrationModel.getPhone())
                     .email(registrationModel.getEmail())
                     .classColumn(registrationModel.getClass_grade())
-                    .coins(Integer.valueOf(registrationModel.getCoins()))
+                    .coins(coins)
                     .build();
             userService.create(user);
             response = ApiResponse.OK;
         } catch (Exception e) {
+            log.error(e.getMessage());
             response = ApiResponse.UNKNOWN_ERROR;
         }
 

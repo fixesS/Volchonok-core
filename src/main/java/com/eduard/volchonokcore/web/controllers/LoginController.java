@@ -40,7 +40,7 @@ public class LoginController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @PostMapping
+    @PostMapping//todo get
     public ResponseEntity<String> handle(HttpServletRequest request, @RequestBody AuthModel authModel) throws UnknownHostException {
         String userAgent = request.getHeader("User-Agent");
         String ip_address = request.getRemoteAddr();
@@ -48,15 +48,20 @@ public class LoginController {
         String body = "";
         ApiResponse response;
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(authModel.getLogin(), authModel.getPassword());
-        Authentication auth = authenticationManager.authenticate(authenticationToken);
-
-        User user1 = (User)auth.getPrincipal();
-        User user = userService.findByLogin(user1.getLogin());
+        User user = userService.findByLogin(authModel.getLogin());
         response = ApiResponse.OK;
         if(user==null){
             response = ApiResponse.USER_DOES_NOT_EXIST;
+        }else{
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(authModel.getLogin(), authModel.getPassword());
+            Authentication auth = authenticationManager.authenticate(authenticationToken);
+
+            user = (User)auth.getPrincipal();
+            response = ApiResponse.OK;
+            if(user==null){
+                response = ApiResponse.USER_DOES_NOT_EXIST;
+            }
         }
 
         switch (response){
