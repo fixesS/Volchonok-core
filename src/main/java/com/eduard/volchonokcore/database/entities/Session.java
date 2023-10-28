@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "sessions", schema = "public")
+@Table(name = "sessions_mobile", schema = "public")
 public class Session {
     @Id
     @Column(columnDefinition = "BINARY(16)", name = "sessionuuid")
