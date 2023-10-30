@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "courses", schema = "public")
 public class Course {
     @Id
+    @Column(name = "courseid")
     private Integer courseId;
     @Column
     private String name;

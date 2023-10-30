@@ -1,4 +1,196 @@
 package com.eduard.volchonokcore.web.controllers;
 
+import com.eduard.volchonokcore.database.entities.Lesson;
+import com.eduard.volchonokcore.database.entities.Module;
+import com.eduard.volchonokcore.database.entities.Question;
+import com.eduard.volchonokcore.database.entities.Test;
+import com.eduard.volchonokcore.database.services.LessonService;
+import com.eduard.volchonokcore.database.services.ModuleService;
+import com.eduard.volchonokcore.database.services.QuestionService;
+import com.eduard.volchonokcore.database.services.TestService;
+import com.eduard.volchonokcore.web.enums.ApiResponse;
+import com.eduard.volchonokcore.web.gson.GsonParser;
+import com.eduard.volchonokcore.web.models.ApiError;
+import com.eduard.volchonokcore.web.models.ApiOk;
+import com.eduard.volchonokcore.web.models.LessonModel;
+import com.eduard.volchonokcore.web.models.ModuleModel;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
+
+@Slf4j
+@RestController
+@RequestMapping("/api/v1/module")
 public class ModuleController {
+    @Autowired
+    private ModuleService moduleService;
+    @Autowired
+    private LessonService lessonService;
+    @Autowired
+    private TestService testService;
+    @Autowired
+    private QuestionService questionService;
+
+    @GetMapping("{moduleId}")
+    public ResponseEntity<String> handleGetModuleByModuleId(HttpServletRequest request, @PathVariable int moduleId) throws UnknownHostException {
+        ApiResponse response = ApiResponse.UNKNOWN_ERROR;
+        GsonParser gsonParser = new GsonParser();
+        String body = "";
+        Module module = null;
+
+        try{
+            module = moduleService.findById(moduleId);
+            if(module == null){
+                response = ApiResponse.MODULE_DOES_NOT_EXIST;
+            }else{
+                response = ApiResponse.OK;
+            }
+
+        }catch (Exception e){
+            log.error(e.getMessage(),e.getClass());
+            response.setMessage(e.getMessage());
+            response = ApiResponse.UNKNOWN_ERROR;
+        }
+
+        switch (response){
+            case OK -> {
+                ModuleModel moduleModel = ModuleModel.builder()
+                        .module_id(module.getModuleId())
+                        .course_id(module.getCourse().getCourseId())
+                        .number(module.getNumber())
+                        .build();
+                ApiOk<ModuleModel> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), moduleModel);
+                body = gsonParser.apiOkToJson(apiOk);
+            }
+            default -> {
+                ApiError apiError = ApiResponse.getApiError(response.getStatusCode(),response.getMessage());
+                body = gsonParser.apiErrorToJson(apiError);
+            }
+        }
+        return new ResponseEntity<>(body,response.getStatus());
+    }
+    @GetMapping("{moduleId}/lessons")
+    public ResponseEntity<String> handleGetLessonsByModuleId(HttpServletRequest request, @PathVariable int moduleId) throws UnknownHostException {
+        ApiResponse response = ApiResponse.UNKNOWN_ERROR;
+        GsonParser gsonParser = new GsonParser();
+        String body = "";
+        Module module = null;
+        List<Integer> lessonsIds = new ArrayList<>();
+
+        try{
+            module = moduleService.findById(moduleId);
+            if(module == null){
+                response = ApiResponse.MODULE_DOES_NOT_EXIST;
+            }else{
+                lessonsIds = lessonService.findAllIdsByModule(module);
+                response = ApiResponse.OK;
+            }
+
+        }catch (Exception e){
+            log.error(e.getMessage(),e.getClass());
+            response.setMessage(e.getMessage());
+            response = ApiResponse.UNKNOWN_ERROR;
+        }
+
+        switch (response){
+            case OK -> {
+                ApiOk<List<Integer>> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), lessonsIds);
+                body = gsonParser.apiOkToJson(apiOk);
+            }
+            default -> {
+                ApiError apiError = ApiResponse.getApiError(response.getStatusCode(),response.getMessage());
+                body = gsonParser.apiErrorToJson(apiError);
+            }
+        }
+        return new ResponseEntity<>(body,response.getStatus());
+    }
+    @GetMapping("{moduleId}/tests")
+    public ResponseEntity<String> handleGetTestsByModuleId(HttpServletRequest request, @PathVariable int moduleId) throws UnknownHostException {
+        ApiResponse response = ApiResponse.UNKNOWN_ERROR;
+        GsonParser gsonParser = new GsonParser();
+        String body = "";
+        Module module = null;
+        List<Integer> testsIds = new ArrayList<>();
+
+        try{
+            module = moduleService.findById(moduleId);
+            if(module == null){
+                response = ApiResponse.MODULE_DOES_NOT_EXIST;
+            }else{
+                List<Lesson> lessons = lessonService.findAllByModule(module);
+                for(Lesson lesson : lessons){
+                    testsIds.addAll(testService.findAllIdsByLesson(lesson));
+                }
+                response = ApiResponse.OK;
+            }
+
+        }catch (Exception e){
+            log.error(e.getMessage(),e.getClass());
+            response.setMessage(e.getMessage());
+            response = ApiResponse.UNKNOWN_ERROR;
+        }
+
+        switch (response){
+            case OK -> {
+                ApiOk<List<Integer>> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), testsIds);
+                body = gsonParser.apiOkToJson(apiOk);
+            }
+            default -> {
+                ApiError apiError = ApiResponse.getApiError(response.getStatusCode(),response.getMessage());
+                body = gsonParser.apiErrorToJson(apiError);
+            }
+        }
+        return new ResponseEntity<>(body,response.getStatus());
+    }
+    @GetMapping("{moduleId}/questions")
+    public ResponseEntity<String> handleGetQuestionsByModuleId(HttpServletRequest request, @PathVariable int moduleId) throws UnknownHostException {
+        ApiResponse response = ApiResponse.UNKNOWN_ERROR;
+        GsonParser gsonParser = new GsonParser();
+        String body = "";
+        Module module = null;
+        List<Integer> questionIds = new ArrayList<>();
+
+        try{
+            module = moduleService.findById(moduleId);
+            if(module == null){
+                response = ApiResponse.MODULE_DOES_NOT_EXIST;
+            }else{
+                List<Lesson> lessons = lessonService.findAllByModule(module);
+                for(Lesson lesson: lessons){
+                    List<Test> tests = testService.findAllByLesson(lesson);
+                    for(Test test : tests){
+                        List<Integer> questions = questionService.findAllIdsByTest(test);
+                        questionIds.addAll(questions);
+                    }
+                }
+                response = ApiResponse.OK;
+            }
+
+        }catch (Exception e){
+            log.error(e.getMessage(),e.getClass());
+            response.setMessage(e.getMessage());
+            response = ApiResponse.UNKNOWN_ERROR;
+        }
+
+        switch (response){
+            case OK -> {
+                ApiOk<List<Integer>> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), questionIds);
+                body = gsonParser.apiOkToJson(apiOk);
+            }
+            default -> {
+                ApiError apiError = ApiResponse.getApiError(response.getStatusCode(),response.getMessage());
+                body = gsonParser.apiErrorToJson(apiError);
+            }
+        }
+        return new ResponseEntity<>(body,response.getStatus());
+    }
 }

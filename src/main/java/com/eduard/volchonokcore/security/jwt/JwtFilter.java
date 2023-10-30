@@ -31,7 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        log.info("filter strarted");
+        log.info("Filtered");
         final String authHeader = request.getHeader("Authorization");
         if(authHeader == null || !authHeader.startsWith("Bearer ")){
             filterChain.doFilter(request,response);
@@ -40,7 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String accessToken = jwtService.resolveAccessToken(request);
         Session session = sessionService.findByUuid(jwtService.getSessionIdAccess(accessToken));
         if(session == null){
-            log.error("session is null");
+            log.error("Session is null");
             filterChain.doFilter(request,response);
             return;
         }

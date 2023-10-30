@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -16,7 +14,8 @@ import java.util.List;
 @Table(name = "lessons", schema = "public")
 public class Lesson {
     @Id
-    private Integer lessonid;
+    @Column(name = "lessonid")
+    private Integer lessonId;
 
     @Column(name = "chat_text")
     private String chatText;

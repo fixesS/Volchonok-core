@@ -47,22 +47,27 @@ public class RefreshController {
         String body = "";
         GsonParser gsonParser = new GsonParser();
         Claims claims = jwtService.getRefreshClaims(refreshToken);
-
-        if(!jwtService.validateRefreshToken(refreshToken) || !claims.getSubject().equals("refresh")){
-            response = ApiResponse.INVALID_REFRESH_TOKEN;
-        }else{
-            Session session = sessionService.findByUuid(jwtService.getSessionIdRefresh(refreshToken));
-            if(session==null){
-                response = ApiResponse.SESSION_DOES_NOT_EXIST;
-            }else{
-                Date iat = claims.getIssuedAt();
-                if(!iat.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().isAfter(claims.getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())){
-                    tokenData = authService.refreshSession(session.getSessionUuid());
-                    response = ApiResponse.OK;
-                }else{
-                    response = ApiResponse.SESSION_EXPIRED;
+        try {
+            if (!jwtService.validateRefreshToken(refreshToken) || !claims.getSubject().equals("refresh")) {
+                response = ApiResponse.INVALID_REFRESH_TOKEN;
+            } else {
+                Session session = sessionService.findByUuid(jwtService.getSessionIdRefresh(refreshToken));
+                if (session == null) {
+                    response = ApiResponse.SESSION_DOES_NOT_EXIST;
+                } else {
+                    Date iat = claims.getIssuedAt();
+                    if (!iat.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().isAfter(claims.getExpiration().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime())) {
+                        tokenData = authService.refreshSession(session.getSessionUuid());
+                        response = ApiResponse.OK;
+                    } else {
+                        response = ApiResponse.SESSION_EXPIRED;
+                    }
                 }
             }
+        }catch (Exception e){
+            response = ApiResponse.UNKNOWN_ERROR;
+            response.setMessage(e.getMessage());
+            log.error(e.getMessage());
         }
 
         switch (response){

@@ -16,6 +16,7 @@ import java.util.List;
 @Table(name = "modules", schema = "public")
 public class Module {
     @Id
+    @Column(name = "moduleid")
     private Integer moduleId;
     @ManyToOne
     @JoinColumn(name = "courseid")

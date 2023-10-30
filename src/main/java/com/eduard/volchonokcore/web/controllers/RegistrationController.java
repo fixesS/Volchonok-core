@@ -62,11 +62,14 @@ public class RegistrationController {//todo оставить login password - о
                     .classColumn(registrationModel.getClass_grade())
                     .coins(coins)
                     .build();
+
             userService.create(user);
+
             response = ApiResponse.OK;
         } catch (Exception e) {
-            log.error(e.getMessage());
             response = ApiResponse.UNKNOWN_ERROR;
+            response.setMessage(e.getMessage());
+            log.error(e.getMessage());
         }
 
         switch (response){

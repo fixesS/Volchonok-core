@@ -1,13 +1,13 @@
 package com.eduard.volchonokcore.web.controllers;
 
-import com.eduard.volchonokcore.database.entities.Lesson;
-import com.eduard.volchonokcore.database.services.LessonService;
+import com.eduard.volchonokcore.database.entities.Test;
+import com.eduard.volchonokcore.database.services.QuestionService;
 import com.eduard.volchonokcore.database.services.TestService;
 import com.eduard.volchonokcore.web.enums.ApiResponse;
 import com.eduard.volchonokcore.web.gson.GsonParser;
 import com.eduard.volchonokcore.web.models.ApiError;
 import com.eduard.volchonokcore.web.models.ApiOk;
-import com.eduard.volchonokcore.web.models.LessonModel;
+import com.eduard.volchonokcore.web.models.TestModel;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,25 +23,24 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/lesson")
-public class LessonController {
-
-    @Autowired
-    private LessonService lessonService;
+@RequestMapping("/api/v1/test")
+public class TestController {
     @Autowired
     private TestService testService;
+    @Autowired
+    private QuestionService questionService;
 
-    @GetMapping("{lessonId}")
-    public ResponseEntity<String> handleGetLessonByLessonId(HttpServletRequest request, @PathVariable int lessonId) throws UnknownHostException {
+    @GetMapping("{testId}")
+    public ResponseEntity<String> handleGetTestByTestId(HttpServletRequest request, @PathVariable int testId) throws UnknownHostException {
         ApiResponse response = ApiResponse.UNKNOWN_ERROR;
         GsonParser gsonParser = new GsonParser();
         String body = "";
-        Lesson lesson = null;
+        Test test = null;
 
         try{
-            lesson = lessonService.finById(lessonId);
-            if(lesson == null){
-                response = ApiResponse.LESSON_DOES_NOT_EXIST;
+            test = testService.findById(testId);
+            if(test == null){
+                response = ApiResponse.TEST_DOES_NOT_EXIST;
             }else{
                 response = ApiResponse.OK;
             }
@@ -54,14 +53,12 @@ public class LessonController {
 
         switch (response){
             case OK -> {
-                LessonModel lessonModel = LessonModel.builder()
-                        .lesson_id(lesson.getLessonId())
-                        .chat_text(lesson.getChatText())
-                        .abstract_text(lesson.getAbstractText())
-                        .module_id(lesson.getModule().getModuleId())
-                        .number(lesson.getNumber())
+                TestModel testModel = TestModel.builder()
+                        .test_id(test.getTestId())
+                        .text(test.getText())
+                        .lesson_id(test.getLesson().getLessonId())
                         .build();
-                ApiOk<LessonModel> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), lessonModel);
+                ApiOk<TestModel> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), testModel);
                 body = gsonParser.apiOkToJson(apiOk);
             }
             default -> {
@@ -71,20 +68,20 @@ public class LessonController {
         }
         return new ResponseEntity<>(body,response.getStatus());
     }
-    @GetMapping("{lessonId}/tests")
-    public ResponseEntity<String> handleGetTestsByLessonsId(HttpServletRequest request, @PathVariable int lessonId) throws UnknownHostException {
+    @GetMapping("{testId}/questions")
+    public ResponseEntity<String> handleGetQuestionsByTestId(HttpServletRequest request, @PathVariable int testId) throws UnknownHostException {
         ApiResponse response = ApiResponse.UNKNOWN_ERROR;
         GsonParser gsonParser = new GsonParser();
         String body = "";
-        Lesson lesson = null;
-        List<Integer> testsIds = new ArrayList<>();
+        Test test = null;
+        List<Integer> questionsIds = new ArrayList<>();
 
         try{
-            lesson = lessonService.finById(lessonId);
-            if(lesson == null){
+            test = testService.findById(testId);
+            if(test == null){
                 response = ApiResponse.TEST_DOES_NOT_EXIST;
             }else{
-                testsIds = testService.findAllIdsByLesson(lesson);
+                questionsIds = questionService.findAllIdsByTest(test);
                 response = ApiResponse.OK;
             }
 
@@ -96,7 +93,7 @@ public class LessonController {
 
         switch (response){
             case OK -> {
-                ApiOk<List<Integer>> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), testsIds);
+                ApiOk<List<Integer>> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), questionsIds);
                 body = gsonParser.apiOkToJson(apiOk);
             }
             default -> {

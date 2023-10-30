@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "users", schema = "public")
-public class User implements UserDetails {//todo +avatar сохранение +level
+public class User implements UserDetails {
     @Id
     @Column(name = "userid")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

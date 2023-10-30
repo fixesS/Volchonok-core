@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "questions", schema = "public")
 public class Question {
     @Id
+    @Column(name = "questionid")
     private Integer questionId;
     @ManyToOne
     @JoinColumn(name = "testid")
