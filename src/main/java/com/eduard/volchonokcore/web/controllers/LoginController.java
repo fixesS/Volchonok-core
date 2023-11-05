@@ -9,6 +9,8 @@ import com.eduard.volchonokcore.web.models.ApiError;
 import com.eduard.volchonokcore.web.models.ApiOk;
 import com.eduard.volchonokcore.web.models.AuthModel;
 import com.eduard.volchonokcore.web.models.TokenData;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,7 @@ import java.net.UnknownHostException;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/auth/login")
+@Tag(name="Login controller", description="Handles login requests")
 public class LoginController {
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -41,6 +44,10 @@ public class LoginController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping
+    @Operation(
+            summary = "Login",
+            description = "Auth by login and password"
+    )
     public ResponseEntity<String> handle(HttpServletRequest request, @RequestBody AuthModel authModel) throws UnknownHostException {
         String userAgent = request.getHeader("User-Agent");
         String ip_address = request.getRemoteAddr();
@@ -57,6 +64,7 @@ public class LoginController {
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(authModel.getLogin(), authModel.getPassword());
                 Authentication auth = authenticationManager.authenticate(authenticationToken);
+
 
                 user = (User) auth.getPrincipal();
                 response = ApiResponse.OK;

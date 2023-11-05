@@ -16,7 +16,7 @@ public class Question {
     @Id
     @Column(name = "questionid")
     private Integer questionId;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "testid")
     private Test test;
     @Column

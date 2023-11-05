@@ -16,9 +16,10 @@ public class UserCourseService {
     private UserCourseRepository userCourseRepository;
 
     @Transactional
-    public void createUserCourse(UserCourse userCourse){
-        userCourseRepository.save(userCourse);
+    public UserCourse createUserCourse(UserCourse userCourse){
+        return userCourseRepository.saveAndFlush(userCourse);
     }
+    @Transactional
     public void updateUserCourse(UserCourse userCourse){
         userCourseRepository.save(userCourse);
     }
@@ -32,6 +33,6 @@ public class UserCourseService {
     }
     @Transactional
     public UserCourse findByUser(User user){
-        return userCourseRepository.findByUser(user);
+        return userCourseRepository.findByUserid(user);
     }
 }

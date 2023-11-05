@@ -7,6 +7,8 @@ import com.eduard.volchonokcore.web.gson.GsonParser;
 import com.eduard.volchonokcore.web.models.ApiError;
 import com.eduard.volchonokcore.web.models.ApiOk;
 import com.eduard.volchonokcore.web.models.QuestionModel;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +20,17 @@ import java.net.UnknownHostException;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/question")
+@Tag(name="Question controller", description="Gives information about questions")
 public class QuestionController {
 
     @Autowired
     private QuestionService questionService;
 
     @GetMapping("{questionId}")
+    @Operation(
+            summary = "Get question info",
+            description = "Gives info about question by question id"
+    )
     public ResponseEntity<String> handleGetQuestionByQuestionId(HttpServletRequest request, @PathVariable int questionId) throws UnknownHostException {
         ApiResponse response = ApiResponse.UNKNOWN_ERROR;
         GsonParser gsonParser = new GsonParser();

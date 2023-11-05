@@ -11,7 +11,9 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Data
@@ -46,6 +48,24 @@ public class User implements UserDetails {
     private Integer classColumn;
     @Column
     private Integer coins;
+    @ManyToMany(targetEntity = Course.class,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "users_courses",
+            joinColumns = @JoinColumn(name = "userid"),
+            inverseJoinColumns = @JoinColumn(name = "courseid"))
+    private Set<Course> courses;
+    @ManyToMany(targetEntity = Question.class,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "users_questions",
+            joinColumns = @JoinColumn(name = "userid"),
+            inverseJoinColumns = @JoinColumn(name = "questionid"))
+    private Set<Question> questions;
+    @ManyToMany(targetEntity = Lesson.class,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "users_lessons",
+            joinColumns = @JoinColumn(name = "userid"),
+            inverseJoinColumns = @JoinColumn(name = "lessonid"))
+    private Set<Lesson> lessons;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

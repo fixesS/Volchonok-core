@@ -7,25 +7,26 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "usercourses", schema = "public")
+@Table(name = "users_courses", schema = "public")
 public class UserCourse {
     @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
-
-    @OneToOne
-    @PrimaryKeyJoinColumn(name = "userid")
-    private User user;
-
-    @OneToMany
-    @PrimaryKeyJoinColumn(name = "courseid")
-    private List<Course> courses;
+    @Column(name = "userid")
+    private Integer userid;
+    @Column(name = "courseid")
+    private Integer courseid;
 
 
 

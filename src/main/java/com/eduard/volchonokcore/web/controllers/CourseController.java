@@ -11,6 +11,8 @@ import com.eduard.volchonokcore.web.models.ApiError;
 import com.eduard.volchonokcore.web.models.ApiOk;
 import com.eduard.volchonokcore.web.models.CourseModel;
 import com.eduard.volchonokcore.web.models.ModuleModel;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/course")
+@Tag(name="Course controller", description="Gives information about courses")
 public class CourseController {
     @Autowired
     private CourseService courseService;
@@ -40,6 +43,10 @@ public class CourseController {
     private QuestionService questionService;
 
     @GetMapping("{courseId}")
+    @Operation(
+            summary = "Get course info",
+            description = "Gives info about course by course id"
+    )
     public ResponseEntity<String> handleGetCourseByCourseId(HttpServletRequest request, @PathVariable int courseId) throws UnknownHostException {
         ApiResponse response = ApiResponse.UNKNOWN_ERROR;
         GsonParser gsonParser = new GsonParser();
@@ -78,6 +85,10 @@ public class CourseController {
         return new ResponseEntity<>(body,response.getStatus());
     }
     @GetMapping("{courseId}/modules")
+    @Operation(
+            summary = "Get course modules",
+            description = "Gives all modules ids in the course by course id"
+    )
     public ResponseEntity<String> handleGetModulesByCourseId(HttpServletRequest request, @PathVariable int courseId) throws UnknownHostException {
         ApiResponse response = ApiResponse.UNKNOWN_ERROR;
         GsonParser gsonParser = new GsonParser();
@@ -113,6 +124,10 @@ public class CourseController {
         return new ResponseEntity<>(body,response.getStatus());
     }
     @GetMapping("{courseId}/lessons")
+    @Operation(
+            summary = "Get course lessons",
+            description = "Gives all lessons ids in the course by course id"
+    )
     public ResponseEntity<String> handleGetLessonsByCourseId(HttpServletRequest request, @PathVariable int courseId) throws UnknownHostException {
         ApiResponse response = ApiResponse.UNKNOWN_ERROR;
         GsonParser gsonParser = new GsonParser();
@@ -151,6 +166,10 @@ public class CourseController {
         return new ResponseEntity<>(body,response.getStatus());
     }
     @GetMapping("{courseId}/tests")
+    @Operation(
+            summary = "Get course tests",
+            description = "Gives all tests ids in the course by course id"
+    )
     public ResponseEntity<String> handleGetTestsByCourseId(HttpServletRequest request, @PathVariable int courseId) throws UnknownHostException {
         ApiResponse response = ApiResponse.UNKNOWN_ERROR;
         GsonParser gsonParser = new GsonParser();
@@ -192,6 +211,10 @@ public class CourseController {
         return new ResponseEntity<>(body,response.getStatus());
     }
     @GetMapping("{courseId}/questions")
+    @Operation(
+            summary = "Get course questions",
+            description = "Gives all questions ids in the course by course id"
+    )
     public ResponseEntity<String> handleGetQuestionsByCourseId(HttpServletRequest request, @PathVariable int courseId) throws UnknownHostException {
         ApiResponse response = ApiResponse.UNKNOWN_ERROR;
         GsonParser gsonParser = new GsonParser();

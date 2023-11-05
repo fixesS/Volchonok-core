@@ -22,4 +22,9 @@ public class CourseService {
     public List<Course> findAll(){
         return courseRepository.findAll();
     }
+
+    @Transactional
+    public Course update(Course course){
+        return courseRepository.save(course);
+    }
 }

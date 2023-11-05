@@ -1,5 +1,6 @@
 package com.eduard.volchonokcore.config;
 
+import com.eduard.volchonokcore.security.CustomAuthentiactionFailureHandler;
 import com.eduard.volchonokcore.security.enums.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
@@ -25,6 +27,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
                                 .requestMatchers("/api/v1/auth/*").permitAll()
+                                .requestMatchers("/v3/api-docs","/swagger-ui/**").permitAll()
                                 .requestMatchers("/api/v1/user/**").hasAuthority(Role.USER.name())
                                 .requestMatchers("/api/v1/question/**").hasAuthority(Role.USER.name())
                                 .requestMatchers("/api/v1/test/**").hasAuthority(Role.USER.name())
@@ -37,7 +40,8 @@ public class SecurityConfig {
                 .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationManager(jwtConfig.authenticationManager())
                 .addFilterAfter(jwtConfig.jwtAuthenticationFilter(), BasicAuthenticationFilter.class)
-        ;
+                ;
         return http.build();
     }
+
 }

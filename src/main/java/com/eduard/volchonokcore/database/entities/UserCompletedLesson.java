@@ -13,14 +13,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "userlessons", schema = "public")
-public class UserCompletedLessons {
+@Table(name = "users_lessons", schema = "public")
+public class UserCompletedLesson {
     @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
-    @OneToOne
-    @JoinColumn(name = "userid")
-    private User user;
-    @OneToMany
-    @PrimaryKeyJoinColumn(name = "lessonid")
-    private List<Lesson> lessons;
+    @Column(name = "userid")
+    private Integer userid;
+    @Column(name = "lessonid")
+    private Integer lessonid;
 }

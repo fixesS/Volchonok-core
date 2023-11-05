@@ -21,7 +21,7 @@ public class Lesson {
     private String chatText;
     @Column(name = "abstract_text")
     private String abstractText;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "moduleid")
     private Module module;
     @Column

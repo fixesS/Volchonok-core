@@ -18,7 +18,10 @@ public enum ApiResponse {
     TEST_DOES_NOT_EXIST(-11000,"Test does not exist", HttpStatus.BAD_REQUEST),
     LESSON_DOES_NOT_EXIST(-12000,"Lesson does not exist", HttpStatus.BAD_REQUEST),
     MODULE_DOES_NOT_EXIST(-13000,"Module does not exist", HttpStatus.BAD_REQUEST),
-    COURSE_DOES_NOT_EXIST(-14000,"Course does not exist", HttpStatus.BAD_REQUEST);
+    COURSE_DOES_NOT_EXIST(-14000,"Course does not exist", HttpStatus.BAD_REQUEST),
+    USERCOURSE_DOES_NOT_EXIST(-15000,"User does not have any courses", HttpStatus.BAD_REQUEST),
+    USERQUESTION_DOES_NOT_EXIST(-16000,"User does not have any completed questions", HttpStatus.BAD_REQUEST),
+    USERLESSON_DOES_NOT_EXIST(-17000,"User does not have any completed lessons", HttpStatus.BAD_REQUEST);
 
     @Getter
     private Integer statusCode;

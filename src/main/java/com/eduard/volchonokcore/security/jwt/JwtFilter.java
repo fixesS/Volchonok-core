@@ -2,6 +2,7 @@ package com.eduard.volchonokcore.security.jwt;
 
 import com.eduard.volchonokcore.database.entities.Session;
 import com.eduard.volchonokcore.database.services.SessionService;
+import com.eduard.volchonokcore.web.enums.ApiResponse;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.UUID;
 
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
@@ -31,16 +33,21 @@ public class JwtFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-        log.info("Filtered");
         final String authHeader = request.getHeader("Authorization");
         if(authHeader == null || !authHeader.startsWith("Bearer ")){
+            log.info("Auth header is null");
             filterChain.doFilter(request,response);
             return;
         }
         String accessToken = jwtService.resolveAccessToken(request);
+        if(accessToken == null || !jwtService.validateAccessToken(accessToken)){
+            log.info("Invalid JWT");
+            filterChain.doFilter(request, response);
+            return;
+        }
         Session session = sessionService.findByUuid(jwtService.getSessionIdAccess(accessToken));
         if(session == null){
-            log.error("Session is null");
+            log.info("Session is null");
             filterChain.doFilter(request,response);
             return;
         }
@@ -50,6 +57,7 @@ public class JwtFilter extends OncePerRequestFilter {
         if(!iat.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().isAfter(session.getLastRefresh())){
             authentication.setAuthenticated(true);
         }else{
+            log.info("Session expired");
             authentication.setAuthenticated(false);
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);

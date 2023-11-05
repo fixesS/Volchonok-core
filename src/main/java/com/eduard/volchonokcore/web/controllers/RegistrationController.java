@@ -11,6 +11,8 @@ import com.eduard.volchonokcore.web.models.ApiError;
 import com.eduard.volchonokcore.web.models.ApiOk;
 import com.eduard.volchonokcore.web.models.RegistrationModel;
 import com.eduard.volchonokcore.web.models.TokenData;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,8 @@ import java.net.UnknownHostException;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/auth/registration")
-public class RegistrationController {//todo оставить login password - остальное null
+@Tag(name="Registration controller", description="Handles registration requests")
+public class RegistrationController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -39,8 +42,12 @@ public class RegistrationController {//todo оставить login password - о
 
 
     @PostMapping
+    @Operation(
+            summary = "Registration",
+            description = "Registration user"
+    )
     public ResponseEntity<String> handle(HttpServletRequest request, @Validated @RequestBody RegistrationModel registrationModel) throws UnknownHostException {
-        String userAgent = request.getHeader("User-Agent");
+        String userAgent = request.getHeader("User-Agent");//mobile-front
         String ip_address = request.getRemoteAddr();
         GsonParser gsonParser = new GsonParser();
         User user = null;

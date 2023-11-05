@@ -14,6 +14,8 @@ import com.eduard.volchonokcore.web.models.ApiError;
 import com.eduard.volchonokcore.web.models.ApiOk;
 import com.eduard.volchonokcore.web.models.LessonModel;
 import com.eduard.volchonokcore.web.models.ModuleModel;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/module")
+@Tag(name="Module controller", description="Gives information about modules")
 public class ModuleController {
     @Autowired
     private ModuleService moduleService;
@@ -41,6 +44,10 @@ public class ModuleController {
     private QuestionService questionService;
 
     @GetMapping("{moduleId}")
+    @Operation(
+            summary = "Get module info",
+            description = "Gives info about module by module id"
+    )
     public ResponseEntity<String> handleGetModuleByModuleId(HttpServletRequest request, @PathVariable int moduleId) throws UnknownHostException {
         ApiResponse response = ApiResponse.UNKNOWN_ERROR;
         GsonParser gsonParser = new GsonParser();
@@ -79,6 +86,10 @@ public class ModuleController {
         return new ResponseEntity<>(body,response.getStatus());
     }
     @GetMapping("{moduleId}/lessons")
+    @Operation(
+            summary = "Get module lessons",
+            description = "Gives all lessons ids in the module by module id"
+    )
     public ResponseEntity<String> handleGetLessonsByModuleId(HttpServletRequest request, @PathVariable int moduleId) throws UnknownHostException {
         ApiResponse response = ApiResponse.UNKNOWN_ERROR;
         GsonParser gsonParser = new GsonParser();
@@ -114,6 +125,10 @@ public class ModuleController {
         return new ResponseEntity<>(body,response.getStatus());
     }
     @GetMapping("{moduleId}/tests")
+    @Operation(
+            summary = "Get module tests",
+            description = "Gives all tests ids in the module by module id"
+    )
     public ResponseEntity<String> handleGetTestsByModuleId(HttpServletRequest request, @PathVariable int moduleId) throws UnknownHostException {
         ApiResponse response = ApiResponse.UNKNOWN_ERROR;
         GsonParser gsonParser = new GsonParser();
@@ -152,6 +167,10 @@ public class ModuleController {
         return new ResponseEntity<>(body,response.getStatus());
     }
     @GetMapping("{moduleId}/questions")
+    @Operation(
+            summary = "Get module questions",
+            description = "Gives all questions ids in the module by module id"
+    )
     public ResponseEntity<String> handleGetQuestionsByModuleId(HttpServletRequest request, @PathVariable int moduleId) throws UnknownHostException {
         ApiResponse response = ApiResponse.UNKNOWN_ERROR;
         GsonParser gsonParser = new GsonParser();

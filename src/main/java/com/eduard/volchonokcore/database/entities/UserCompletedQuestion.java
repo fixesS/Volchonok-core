@@ -15,15 +15,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "usercourses", schema = "public")
+@Table(name = "users_questions", schema = "public")
 public class UserCompletedQuestion {
     @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
-    @OneToOne
-    @JoinColumn(name = "userid")
-    private User user;
-    @OneToMany
-    @PrimaryKeyJoinColumn(name = "questionid")
-    private List<Question> questions;
+
+    @Column(name = "userid")
+    private Integer userid;
+    @Column(name = "questionid")
+    private Integer questionid;
 
 }

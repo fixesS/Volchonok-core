@@ -8,6 +8,8 @@ import com.eduard.volchonokcore.web.gson.GsonParser;
 import com.eduard.volchonokcore.web.models.ApiError;
 import com.eduard.volchonokcore.web.models.ApiOk;
 import com.eduard.volchonokcore.web.models.TestModel;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/test")
+@Tag(name="Test controller", description="Gives information about tests")
 public class TestController {
     @Autowired
     private TestService testService;
@@ -31,6 +34,10 @@ public class TestController {
     private QuestionService questionService;
 
     @GetMapping("{testId}")
+    @Operation(
+            summary = "Get test info",
+            description = "Gives info about test by test id"
+    )
     public ResponseEntity<String> handleGetTestByTestId(HttpServletRequest request, @PathVariable int testId) throws UnknownHostException {
         ApiResponse response = ApiResponse.UNKNOWN_ERROR;
         GsonParser gsonParser = new GsonParser();
@@ -69,6 +76,10 @@ public class TestController {
         return new ResponseEntity<>(body,response.getStatus());
     }
     @GetMapping("{testId}/questions")
+    @Operation(
+            summary = "Get test questions",
+            description = "Gives all questions ids in the test by test id"
+    )
     public ResponseEntity<String> handleGetQuestionsByTestId(HttpServletRequest request, @PathVariable int testId) throws UnknownHostException {
         ApiResponse response = ApiResponse.UNKNOWN_ERROR;
         GsonParser gsonParser = new GsonParser();

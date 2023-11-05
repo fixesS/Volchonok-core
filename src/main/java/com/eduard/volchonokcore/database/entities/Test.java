@@ -20,7 +20,7 @@ public class Test {
     @Column
     private String text;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "lessonid")
     private Lesson lesson;
 

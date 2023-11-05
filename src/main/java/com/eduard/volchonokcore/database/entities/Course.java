@@ -1,13 +1,12 @@
 package com.eduard.volchonokcore.database.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Set;
 
 @Data
 @Builder
@@ -17,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "courses", schema = "public")
 public class Course {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "courseid")
     private Integer courseId;
     @Column
