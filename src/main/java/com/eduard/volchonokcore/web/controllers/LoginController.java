@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -74,6 +75,9 @@ public class LoginController {
             }
         }catch (Exception e){
             response = ApiResponse.UNKNOWN_ERROR;
+            if(e instanceof BadCredentialsException){
+                response = ApiResponse.USER_DOES_NOT_EXIST;
+            }
             response.setMessage(e.getMessage());
             log.error(e.getMessage());
         }

@@ -75,6 +75,9 @@ public class UserController {
                 UserModel userModel = UserModel.builder()
                         .id(user.getUserId())
                         .login(user.getLogin())
+                        .firstname(user.getFirstname())
+                        .surname(user.getSurname())
+                        .midllename(user.getMiddlename())
                         .avatar(user.getAvatar())
                         .level(user.getLevel())
                         .phone(user.getPhone())
@@ -93,6 +96,7 @@ public class UserController {
         }
         return new ResponseEntity<>(body,response.getStatus());
     }
+    @Deprecated
     @PostMapping("/me")
     @Operation(
             summary = "Take user info",
@@ -174,7 +178,6 @@ public class UserController {
                     response = ApiResponse.USER_DOES_NOT_EXIST;
                 }
                 else{//Если пользователь существует
-                    log.info(user.toString());
                     for(Course course: user.getCourses()){
                         coursesIds.add(course.getCourseId());
                     }
@@ -286,7 +289,6 @@ public class UserController {
                     response = ApiResponse.USER_DOES_NOT_EXIST;
                 }
                 else{//Если пользователь существует
-                    log.info(user.toString());
                     for(Question question: user.getQuestions()){
                         questionsIds.add(question.getQuestionId());
                     }
@@ -398,7 +400,6 @@ public class UserController {
                     response = ApiResponse.USER_DOES_NOT_EXIST;
                 }
                 else{//Если пользователь существует
-                    log.info(user.toString());
                     for(Lesson lesson: user.getLessons()){
                         lessonsIds.add(lesson.getLessonId());
                     }

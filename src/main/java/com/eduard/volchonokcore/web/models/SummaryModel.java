@@ -1,6 +1,7 @@
 package com.eduard.volchonokcore.web.models;
 
-import com.eduard.volchonokcore.database.entities.Module;
+import com.eduard.volchonokcore.database.entities.Lesson;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -13,10 +14,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LessonModel {
+public class SummaryModel {
+    private Integer summary_id;
     private Integer lesson_id;
     private String name;
     private String description;
-    private Integer module_id;
-    private Integer number;
+    private String chat_text;
+    private String video;
+    private Integer duration;
 }

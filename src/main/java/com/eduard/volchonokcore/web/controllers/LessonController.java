@@ -2,6 +2,7 @@ package com.eduard.volchonokcore.web.controllers;
 
 import com.eduard.volchonokcore.database.entities.Lesson;
 import com.eduard.volchonokcore.database.services.LessonService;
+import com.eduard.volchonokcore.database.services.SummaryService;
 import com.eduard.volchonokcore.database.services.TestService;
 import com.eduard.volchonokcore.web.enums.ApiResponse;
 import com.eduard.volchonokcore.web.gson.GsonParser;
@@ -34,6 +35,9 @@ public class LessonController {
     @Autowired
     private TestService testService;
 
+    @Autowired
+    private SummaryService summaryService;
+
     @GetMapping("{lessonId}")
     @Operation(
             summary = "Get lesson info",
@@ -63,8 +67,8 @@ public class LessonController {
             case OK -> {
                 LessonModel lessonModel = LessonModel.builder()
                         .lesson_id(lesson.getLessonId())
-                        .chat_text(lesson.getChatText())
-                        .abstract_text(lesson.getAbstractText())
+                        .name(lesson.getName())
+                        .description(lesson.getDescription())
                         .module_id(lesson.getModule().getModuleId())
                         .number(lesson.getNumber())
                         .build();
@@ -80,8 +84,8 @@ public class LessonController {
     }
     @GetMapping("{lessonId}/tests")
     @Operation(
-            summary = "Get lesson tests",
-            description = "Gives all tests ids in the lessons by lesson id"
+            summary = "Get lesson summaries",
+            description = "Gives all summaries ids in the lessons by lesson id"
     )
     public ResponseEntity<String> handleGetTestsByLessonsId(HttpServletRequest request, @PathVariable int lessonId) throws UnknownHostException {
         ApiResponse response = ApiResponse.UNKNOWN_ERROR;
@@ -108,6 +112,45 @@ public class LessonController {
         switch (response){
             case OK -> {
                 ApiOk<List<Integer>> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), testsIds);
+                body = gsonParser.apiOkToJson(apiOk);
+            }
+            default -> {
+                ApiError apiError = ApiResponse.getApiError(response.getStatusCode(),response.getMessage());
+                body = gsonParser.apiErrorToJson(apiError);
+            }
+        }
+        return new ResponseEntity<>(body,response.getStatus());
+    }
+    @GetMapping("{lessonId}/summaries")
+    @Operation(
+            summary = "Get lesson tests",
+            description = "Gives all tests ids in the lessons by lesson id"
+    )
+    public ResponseEntity<String> handleGetSummariesByLessonsId(HttpServletRequest request, @PathVariable int lessonId) throws UnknownHostException {
+        ApiResponse response = ApiResponse.UNKNOWN_ERROR;
+        GsonParser gsonParser = new GsonParser();
+        String body = "";
+        Lesson lesson = null;
+        List<Integer> summariesIds = new ArrayList<>();
+
+        try{
+            lesson = lessonService.finById(lessonId);
+            if(lesson == null){
+                response = ApiResponse.TEST_DOES_NOT_EXIST;
+            }else{
+                summariesIds = summaryService.findAllIdsByLesson(lesson);
+                response = ApiResponse.OK;
+            }
+
+        }catch (Exception e){
+            log.error(e.getMessage(),e.getClass());
+            response.setMessage(e.getMessage());
+            response = ApiResponse.UNKNOWN_ERROR;
+        }
+
+        switch (response){
+            case OK -> {
+                ApiOk<List<Integer>> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), summariesIds);
                 body = gsonParser.apiOkToJson(apiOk);
             }
             default -> {

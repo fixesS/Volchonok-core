@@ -19,4 +19,7 @@ public class TestModel {
     private String text;
 
     private Integer lesson_id;
+    private String name;
+    private String description;
+    private Integer duration;
 }

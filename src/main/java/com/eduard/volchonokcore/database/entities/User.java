@@ -22,11 +22,18 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "users", schema = "public")
-public class User implements UserDetails {
+public class User implements UserDetails {//todo ФИО
     @Id
     @Column(name = "userid")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
+
+    @Column
+    private String firstname;
+    @Column
+    private String surname;
+    @Column
+    private String middlename;
     @Column
     private String login;
     @Column

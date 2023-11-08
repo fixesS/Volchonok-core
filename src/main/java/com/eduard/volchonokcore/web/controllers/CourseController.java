@@ -40,6 +40,8 @@ public class CourseController {
     @Autowired
     private TestService testService;
     @Autowired
+    private SummaryService summaryService;
+    @Autowired
     private QuestionService questionService;
 
     @GetMapping("{courseId}")
@@ -201,6 +203,51 @@ public class CourseController {
         switch (response){
             case OK -> {
                 ApiOk<List<Integer>> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), testsIds );
+                body = gsonParser.apiOkToJson(apiOk);
+            }
+            default -> {
+                ApiError apiError = ApiResponse.getApiError(response.getStatusCode(),response.getMessage());
+                body = gsonParser.apiErrorToJson(apiError);
+            }
+        }
+        return new ResponseEntity<>(body,response.getStatus());
+    }
+    @GetMapping("{courseId}/summaries")
+    @Operation(
+            summary = "Get course summaries",
+            description = "Gives all summaries ids in the course by course id"
+    )
+    public ResponseEntity<String> handleGetSummariesByCourseId(HttpServletRequest request, @PathVariable int courseId) throws UnknownHostException {
+        ApiResponse response = ApiResponse.UNKNOWN_ERROR;
+        GsonParser gsonParser = new GsonParser();
+        String body = "";
+        Course course = null;
+        List<Integer> summariesIds  = new ArrayList<>();
+
+        try{
+            course = courseService.findById(courseId);
+            if(course == null){
+                response = ApiResponse.COURSE_DOES_NOT_EXIST;
+            }else{
+                List<Module> modules = moduleService.findAllByCourse(course);
+                for(Module module: modules){
+                    List<Lesson> lessons = lessonService.findAllByModule(module);
+                    for(Lesson lesson: lessons){
+                        summariesIds.addAll(summaryService.findAllIdsByLesson(lesson));
+                    }
+                }
+                response = ApiResponse.OK;
+            }
+
+        }catch (Exception e){
+            log.error(e.getMessage(),e.getClass());
+            response.setMessage(e.getMessage());
+            response = ApiResponse.UNKNOWN_ERROR;
+        }
+
+        switch (response){
+            case OK -> {
+                ApiOk<List<Integer>> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), summariesIds );
                 body = gsonParser.apiOkToJson(apiOk);
             }
             default -> {

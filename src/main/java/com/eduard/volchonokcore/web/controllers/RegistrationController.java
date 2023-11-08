@@ -32,7 +32,7 @@ import java.net.UnknownHostException;
 @RestController
 @RequestMapping("/api/v1/auth/registration")
 @Tag(name="Registration controller", description="Handles registration requests")
-public class RegistrationController {
+public class RegistrationController {//todo
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
@@ -53,7 +53,6 @@ public class RegistrationController {
         User user = null;
         String body = "";
         ApiResponse response;
-        log.info(registrationModel.toString());
         try {
             int coins = 0;
             if(registrationModel.getCoins()!=null){
@@ -66,6 +65,9 @@ public class RegistrationController {
                     .role(Role.USER)
                     .phone(registrationModel.getPhone())
                     .email(registrationModel.getEmail())
+                    .firstname(registrationModel.getFirstname())
+                    .surname(registrationModel.getSurname())
+                    .middlename(registrationModel.getMiddlename())
                     .classColumn(registrationModel.getClass_grade())
                     .coins(coins)
                     .build();

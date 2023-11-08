@@ -10,6 +10,10 @@ public class UserModel {
 
     private Integer id;
     private String login;
+    private String firstname;
+    private String surname;
+    private String midllename;
+
     private String avatar;
     private Integer level;
     private String phone;

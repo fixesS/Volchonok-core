@@ -4,10 +4,7 @@ import com.eduard.volchonokcore.database.entities.Lesson;
 import com.eduard.volchonokcore.database.entities.Module;
 import com.eduard.volchonokcore.database.entities.Question;
 import com.eduard.volchonokcore.database.entities.Test;
-import com.eduard.volchonokcore.database.services.LessonService;
-import com.eduard.volchonokcore.database.services.ModuleService;
-import com.eduard.volchonokcore.database.services.QuestionService;
-import com.eduard.volchonokcore.database.services.TestService;
+import com.eduard.volchonokcore.database.services.*;
 import com.eduard.volchonokcore.web.enums.ApiResponse;
 import com.eduard.volchonokcore.web.gson.GsonParser;
 import com.eduard.volchonokcore.web.models.ApiError;
@@ -40,6 +37,8 @@ public class ModuleController {
     private LessonService lessonService;
     @Autowired
     private TestService testService;
+    @Autowired
+    private SummaryService summaryService;
     @Autowired
     private QuestionService questionService;
 
@@ -157,6 +156,48 @@ public class ModuleController {
         switch (response){
             case OK -> {
                 ApiOk<List<Integer>> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), testsIds);
+                body = gsonParser.apiOkToJson(apiOk);
+            }
+            default -> {
+                ApiError apiError = ApiResponse.getApiError(response.getStatusCode(),response.getMessage());
+                body = gsonParser.apiErrorToJson(apiError);
+            }
+        }
+        return new ResponseEntity<>(body,response.getStatus());
+    }
+    @GetMapping("{moduleId}/summaries")
+    @Operation(
+            summary = "Get module summaries",
+            description = "Gives all summaries ids in the module by module id"
+    )
+    public ResponseEntity<String> handleGetSummariesByModuleId(HttpServletRequest request, @PathVariable int moduleId) throws UnknownHostException {
+        ApiResponse response = ApiResponse.UNKNOWN_ERROR;
+        GsonParser gsonParser = new GsonParser();
+        String body = "";
+        Module module = null;
+        List<Integer> summariesIds = new ArrayList<>();
+
+        try{
+            module = moduleService.findById(moduleId);
+            if(module == null){
+                response = ApiResponse.MODULE_DOES_NOT_EXIST;
+            }else{
+                List<Lesson> lessons = lessonService.findAllByModule(module);
+                for(Lesson lesson : lessons){
+                    summariesIds.addAll(summaryService.findAllIdsByLesson(lesson));
+                }
+                response = ApiResponse.OK;
+            }
+
+        }catch (Exception e){
+            log.error(e.getMessage(),e.getClass());
+            response.setMessage(e.getMessage());
+            response = ApiResponse.UNKNOWN_ERROR;
+        }
+
+        switch (response){
+            case OK -> {
+                ApiOk<List<Integer>> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), summariesIds);
                 body = gsonParser.apiOkToJson(apiOk);
             }
             default -> {

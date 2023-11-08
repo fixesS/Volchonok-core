@@ -63,7 +63,10 @@ public class TestController {
                 TestModel testModel = TestModel.builder()
                         .test_id(test.getTestId())
                         .text(test.getText())
+                        .name(test.getName())
+                        .description(test.getDescription())
                         .lesson_id(test.getLesson().getLessonId())
+                        .duration(test.getDuration())
                         .build();
                 ApiOk<TestModel> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), testModel);
                 body = gsonParser.apiOkToJson(apiOk);

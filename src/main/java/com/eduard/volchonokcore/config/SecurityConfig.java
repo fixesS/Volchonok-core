@@ -27,10 +27,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
                                 .requestMatchers("/api/v1/auth/*").permitAll()
-                                .requestMatchers("/v3/api-docs","/swagger-ui/**").permitAll()
+                                .requestMatchers("/**").permitAll()
                                 .requestMatchers("/api/v1/user/**").hasAuthority(Role.USER.name())
                                 .requestMatchers("/api/v1/question/**").hasAuthority(Role.USER.name())
                                 .requestMatchers("/api/v1/test/**").hasAuthority(Role.USER.name())
+                                .requestMatchers("/api/v1/summary/**").hasAuthority(Role.USER.name())
                                 .requestMatchers("/api/v1/lesson/**").hasAuthority(Role.USER.name())
                                 .requestMatchers("/api/v1/module/**").hasAuthority(Role.USER.name())
                                 .requestMatchers("/api/v1/course/**").hasAuthority(Role.USER.name())
