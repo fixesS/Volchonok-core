@@ -25,4 +25,10 @@ public class Lesson {
     private String name;
     @Column
     private String description;
+    @Column(name = "chat_text")
+    private String chatText;
+    @Column
+    private String video;
+    @Column
+    private Integer duration;
 }

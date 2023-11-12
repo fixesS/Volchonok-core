@@ -36,7 +36,6 @@ public class QuestionController {
         GsonParser gsonParser = new GsonParser();
         String body = "";
         Question question = null;
-        log.warn(String.valueOf(questionId));
 
         try{
             question = questionService.findById(questionId);

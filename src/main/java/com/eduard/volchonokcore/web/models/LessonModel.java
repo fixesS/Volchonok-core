@@ -19,4 +19,7 @@ public class LessonModel {
     private String description;
     private Integer module_id;
     private Integer number;
+    private String chat_text;
+    private Integer duration;
+    private String video;
 }
