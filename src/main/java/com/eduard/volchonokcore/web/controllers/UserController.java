@@ -37,6 +37,8 @@ public class UserController {
     private QuestionService questionService;
     @Autowired
     private LessonService lessonService;
+    @Autowired
+    private TestService testService;
     @GetMapping("/me")
     @Operation(
             summary = "Get user info",
@@ -266,7 +268,7 @@ public class UserController {
     }
     @GetMapping("/questions")
     @Operation(
-            summary = "User questions info",
+            summary = "User completed questions info",
             description = "Gives all questions completed by user"
     )
     public ResponseEntity<String> handleGetUserQuestions(HttpServletRequest request) throws UnknownHostException {
@@ -315,7 +317,7 @@ public class UserController {
     }
     @PostMapping("/questions")
     @Operation(
-            summary = "User questions info",
+            summary = "User completed questions info",
             description = "Adds questions as completed by user"
     )
     public ResponseEntity<String> handlePostUserQuestions(HttpServletRequest request,@RequestBody ListOfIds listOfIds) throws UnknownHostException {
@@ -377,7 +379,7 @@ public class UserController {
     }
     @GetMapping("/lessons")
     @Operation(
-            summary = "User lessons info",
+            summary = "User completed lessons info",
             description = "Gives all lessons completed by user"
     )
     public ResponseEntity<String> handleGetUserLessons(HttpServletRequest request) throws UnknownHostException {
@@ -426,7 +428,7 @@ public class UserController {
     }
     @PostMapping("/lessons")
     @Operation(
-            summary = "User lessons info",
+            summary = "User completed lessons info",
             description = "Adds lessons as completed by user"
     )
     public ResponseEntity<String> handlePostUserLessons(HttpServletRequest request,@RequestBody ListOfIds listOfIds) throws UnknownHostException {
@@ -464,6 +466,117 @@ public class UserController {
                     }
                     if(flag){// Если все курсы сущствует, то добавить их и сохранить в базе
                         user.getLessons().addAll(lessons);
+                        userService.update(user);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            response = ApiResponse.UNKNOWN_ERROR;
+            response.setMessage(e.getMessage());
+            log.error(e.getMessage());
+        }
+
+        switch (response){
+            case OK -> {
+                ApiOk<String> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), "" );
+                body = gsonParser.apiOkToJson(apiOk);
+            }
+            default -> {
+                ApiError apiError = ApiResponse.getApiError(response.getStatusCode(),response.getMessage());
+                body = gsonParser.apiErrorToJson(apiError);
+            }
+        }
+        return new ResponseEntity<>(body,response.getStatus());
+    }
+    @GetMapping("/tests")
+    @Operation(
+            summary = "User completed tests info",
+            description = "Gives all tests completed by user"
+    )
+    public ResponseEntity<String> handleGetUserTests(HttpServletRequest request) throws UnknownHostException {
+        ApiResponse response;
+        GsonParser gsonParser = new GsonParser();
+        String body = "";
+        User user = null;
+        List<Integer> testsIds  = new ArrayList<>();//Список id уроков, которые пользователь выполнил
+
+        UUID sessionUuid = (UUID) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Session session = sessionService.findByUuid(sessionUuid);
+
+        try {
+            if(session==null){
+                response = ApiResponse.SESSION_DOES_NOT_EXIST;
+            }
+            else{//Если сессия существует
+                user = session.getUser();
+                if(user==null){
+                    response = ApiResponse.USER_DOES_NOT_EXIST;
+                }
+                else{//Если пользователь существует
+                    for(Test test: user.getTests()){
+                        testsIds.add(test.getTestId());
+                    }
+                    response = ApiResponse.OK;
+                }
+            }
+        } catch (Exception e) {
+            response = ApiResponse.UNKNOWN_ERROR;
+            response.setMessage(e.getMessage());
+            log.error(e.getMessage());
+        }
+
+        switch (response){
+            case OK -> {
+                ApiOk<List<Integer>> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), testsIds );
+                body = gsonParser.apiOkToJson(apiOk);
+            }
+            default -> {
+                ApiError apiError = ApiResponse.getApiError(response.getStatusCode(),response.getMessage());
+                body = gsonParser.apiErrorToJson(apiError);
+            }
+        }
+        return new ResponseEntity<>(body,response.getStatus());
+    }
+    @PostMapping("/tests")
+    @Operation(
+            summary = "User completed lessons info",
+            description = "Adds tests as completed by user"
+    )
+    public ResponseEntity<String> handlePostUserTests(HttpServletRequest request,@RequestBody ListOfIds listOfIds) throws UnknownHostException {
+        ApiResponse response;
+        GsonParser gsonParser = new GsonParser();
+        String body = "";
+        User user = null;
+        List<Test> tests = new ArrayList<>();// список уроков, для добавления к пользователю
+
+        UUID sessionUuid = (UUID) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Session session = sessionService.findByUuid(sessionUuid);
+
+        try {
+            if(session==null){
+                response = ApiResponse.SESSION_DOES_NOT_EXIST;
+            }
+            else{//Если сессия существует
+                user = session.getUser();
+                if(user==null){
+                    response = ApiResponse.USER_DOES_NOT_EXIST;
+                }
+                else{//Если пользователь существует
+                    response = ApiResponse.OK;
+                    boolean flag = true; //Флаг того, что все курсы существуют
+                    for(Integer id : listOfIds.getIds()){
+                        Test test = testService.findById(id);
+                        if(test ==null) {//Если курса нет, то ошибка и выход с цикла
+                            response = ApiResponse.TEST_DOES_NOT_EXIST;
+                            flag = false;
+                            break;
+                        }
+                        else{//Если курс сущетсвует
+                            tests.add(test);
+                        }
+                    }
+                    if(flag){// Если все курсы сущствует, то добавить их и сохранить в базе
+                        user.getTests().addAll(tests);
                         userService.update(user);
                     }
                 }

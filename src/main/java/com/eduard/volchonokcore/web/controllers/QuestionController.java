@@ -1,9 +1,12 @@
 package com.eduard.volchonokcore.web.controllers;
 
+import com.eduard.volchonokcore.database.entities.Answer;
 import com.eduard.volchonokcore.database.entities.Question;
+import com.eduard.volchonokcore.database.services.AnswerService;
 import com.eduard.volchonokcore.database.services.QuestionService;
 import com.eduard.volchonokcore.web.enums.ApiResponse;
 import com.eduard.volchonokcore.web.gson.GsonParser;
+import com.eduard.volchonokcore.web.models.AnswerModel;
 import com.eduard.volchonokcore.web.models.ApiError;
 import com.eduard.volchonokcore.web.models.ApiOk;
 import com.eduard.volchonokcore.web.models.QuestionModel;
@@ -16,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -25,6 +30,8 @@ public class QuestionController {
 
     @Autowired
     private QuestionService questionService;
+    @Autowired
+    private AnswerService answerService;
 
     @GetMapping("{questionId}")
     @Operation(
@@ -36,6 +43,8 @@ public class QuestionController {
         GsonParser gsonParser = new GsonParser();
         String body = "";
         Question question = null;
+        List<Answer> answers = new ArrayList<>();
+        List<AnswerModel> answerModels = new ArrayList<>();
 
         try{
             question = questionService.findById(questionId);
@@ -44,12 +53,25 @@ public class QuestionController {
             }else{
                 response = ApiResponse.OK;
             }
+            answers = answerService.findAllByQuestion(question);
+            for(Answer answer: answers){
+                answerModels.add(
+                        AnswerModel.builder()
+                        .id(answer.getAnswerId())
+                        .text(answer.getText())
+                        .is_right(answer.getIsRight())
+                        .build()
+                );
+            }
+
 
         }catch (Exception e){
             log.error(e.getMessage(),e.getClass());
             response.setMessage(e.getMessage());
             response = ApiResponse.UNKNOWN_ERROR;
         }
+
+
 
         switch (response){
             case OK -> {
@@ -58,7 +80,7 @@ public class QuestionController {
                         .test_id(question.getTest().getTestId())
                         .text(question.getText())
                         .explanation(question.getExplanation())
-                        .answers(question.getAnswers())
+                        .answers(answerModels)
                         .build();
                 ApiOk<QuestionModel> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), questionModel);
                 body = gsonParser.apiOkToJson(apiOk);
@@ -70,4 +92,5 @@ public class QuestionController {
         }
         return new ResponseEntity<>(body,response.getStatus());
     }
+
 }

@@ -63,16 +63,22 @@ public class User implements UserDetails {//todo ФИО
     private Set<Course> courses;
     @ManyToMany(targetEntity = Question.class,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
-            name = "users_questions",
+            name = "users_completed_questions",
             joinColumns = @JoinColumn(name = "userid"),
             inverseJoinColumns = @JoinColumn(name = "questionid"))
     private Set<Question> questions;
     @ManyToMany(targetEntity = Lesson.class,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
-            name = "users_lessons",
+            name = "users_completed_lessons",
             joinColumns = @JoinColumn(name = "userid"),
             inverseJoinColumns = @JoinColumn(name = "lessonid"))
     private Set<Lesson> lessons;
+    @ManyToMany(targetEntity = Test.class,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "users_completed_tests",
+            joinColumns = @JoinColumn(name = "userid"),
+            inverseJoinColumns = @JoinColumn(name = "testid"))
+    private Set<Test> tests;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

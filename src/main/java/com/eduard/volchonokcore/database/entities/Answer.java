@@ -6,28 +6,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "questions", schema = "public")
-public class Question {
+@Table(name = "answers", schema = "public")
+public class Answer {
     @Id
-    @Column(name = "questionid")
-    private Integer questionId;
+    @Column(name = "answerid")
+    private Integer answerId;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "testid")
-    private Test test;
-
+    @JoinColumn(name = "questionid")
+    private Question question;
     @Column
     private String text;
-
-    @Column
-    private String explanation;
-
-
-
+    @Column(name = "is_right")
+    private Boolean isRight;
 }

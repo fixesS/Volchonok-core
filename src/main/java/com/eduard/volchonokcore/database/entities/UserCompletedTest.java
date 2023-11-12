@@ -1,22 +1,18 @@
 package com.eduard.volchonokcore.database.entities;
 
-import com.eduard.volchonokcore.database.entities.id.UserCompletedQuestionId;
-import com.eduard.volchonokcore.database.entities.id.UserCourseId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users_completed_questions", schema = "public")
-public class UserCompletedQuestion {
+@Table(name = "users_completed_tests", schema = "public")
+public class UserCompletedTest {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +20,6 @@ public class UserCompletedQuestion {
 
     @Column(name = "userid")
     private Integer userid;
-    @Column(name = "questionid")
-    private Integer questionid;
-
+    @Column(name = "testid")
+    private Integer testid;
 }
