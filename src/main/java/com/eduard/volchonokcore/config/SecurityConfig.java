@@ -20,13 +20,22 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfig {
     @Autowired
     private JwtConfig jwtConfig;
+    private static final String[] AUTH_WHITE_LIST = {
+            "/v3/api-docs/**",
+            "/v3/api-docs.yaml",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/v2/api-docs/**",
+            "/swagger-resources/**",
+            "/api/v1/auth/**"
+    };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
-                                .requestMatchers("/api/v1/auth/*").permitAll()
+                                .requestMatchers(AUTH_WHITE_LIST).permitAll()
                                 .requestMatchers("/api/v1/user/**").hasAuthority(Role.USER.name())
                                 .requestMatchers("/api/v1/question/**").hasAuthority(Role.USER.name())
                                 .requestMatchers("/api/v1/test/**").hasAuthority(Role.USER.name())
