@@ -1,30 +1,25 @@
 package com.eduard.volchonokcore.web.controllers;
 
-import com.eduard.volchonokcore.database.entities.Course;
-import com.eduard.volchonokcore.database.entities.Lesson;
+import com.eduard.volchonokcore.database.entities.*;
 import com.eduard.volchonokcore.database.entities.Module;
-import com.eduard.volchonokcore.database.entities.Test;
 import com.eduard.volchonokcore.database.services.*;
 import com.eduard.volchonokcore.web.enums.ApiResponse;
 import com.eduard.volchonokcore.web.gson.GsonParser;
-import com.eduard.volchonokcore.web.models.ApiError;
-import com.eduard.volchonokcore.web.models.ApiOk;
-import com.eduard.volchonokcore.web.models.CourseModel;
-import com.eduard.volchonokcore.web.models.ModuleModel;
+import com.eduard.volchonokcore.web.models.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RestController
@@ -41,6 +36,10 @@ public class CourseController {
     private TestService testService;
     @Autowired
     private QuestionService questionService;
+    @Autowired
+    private SessionService sessionService;
+    @Autowired
+    private ReviewService reviewService;
 
     @GetMapping("{courseId}")
     @Operation(
@@ -59,6 +58,7 @@ public class CourseController {
                 response = ApiResponse.COURSE_DOES_NOT_EXIST;
             }else{
                 response = ApiResponse.OK;
+
             }
 
         }catch (Exception e){
@@ -69,10 +69,25 @@ public class CourseController {
 
         switch (response){
             case OK -> {
+                List<Review> reviews = reviewService.findAllByCourse(course);
+                List<ReviewModel> reviewModels = new ArrayList<>();
+                for(Review review: reviews){
+                    reviewModels.add(
+                            ReviewModel.builder()
+                                    .review_id(review.getReviewId())
+                                    .avatar(review.getUser().getAvatar())
+                                    .text(review.getText())
+                                    .firstname(review.getUser().getFirstname())
+                                    .surname(review.getUser().getSurname())
+                                    .middlename(review.getUser().getMiddlename())
+                                    .build()
+                    );
+                }
                 CourseModel courseModel = CourseModel.builder()
                         .course_id(course.getCourseId())
                         .name(course.getName())
                         .description(course.getDescription())
+                        .reviews(reviewModels)
                         .build();
                 ApiOk<CourseModel> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), courseModel);
                 body = gsonParser.apiOkToJson(apiOk);
@@ -249,6 +264,65 @@ public class CourseController {
         switch (response){
             case OK -> {
                 ApiOk<List<Integer>> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), questionIds);
+                body = gsonParser.apiOkToJson(apiOk);
+            }
+            default -> {
+                ApiError apiError = ApiResponse.getApiError(response.getStatusCode(),response.getMessage());
+                body = gsonParser.apiErrorToJson(apiError);
+            }
+        }
+        return new ResponseEntity<>(body,response.getStatus());
+    }
+    @PostMapping("{courseId}/review")
+    @Operation(
+            summary = "Get course questions",
+            description = "Gives all questions ids in the course by course id"
+    )
+    public ResponseEntity<String> handleGetQuestionsByCourseId(HttpServletRequest request, @Validated @RequestBody ReviewModel reviewModel , @PathVariable int courseId) throws UnknownHostException {
+        ApiResponse response = ApiResponse.UNKNOWN_ERROR;
+        GsonParser gsonParser = new GsonParser();
+        String body = "";
+        Course course = null;
+        User user = null;
+
+        UUID sessionUuid =  (UUID) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Session session = sessionService.findByUuid(sessionUuid);
+        try{
+            if(session==null){
+                response = ApiResponse.SESSION_DOES_NOT_EXIST;
+            }
+            else{
+                user = session.getUser();
+                if(user==null){
+                    response = ApiResponse.USER_DOES_NOT_EXIST;
+                }
+                else{
+                    course = courseService.findById(courseId);
+                    if(course == null){
+                        response = ApiResponse.COURSE_DOES_NOT_EXIST;
+                    }else{
+                        log.info(course.toString());
+                        Review review = new Review();
+                        review.setUser(user);
+                        review.setCourse(course);
+                        review.setText(reviewModel.getText());
+                        courseService.update(course);
+                        reviewService.create(review);
+                        response = ApiResponse.OK;
+                    }
+                }
+            }
+
+
+        }catch (Exception e){
+            log.error(e.getMessage(),e.getClass());
+            response.setMessage(e.getMessage());
+            response = ApiResponse.UNKNOWN_ERROR;
+        }
+
+        switch (response){
+            case OK -> {
+                ApiOk<String> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), "");
                 body = gsonParser.apiOkToJson(apiOk);
             }
             default -> {

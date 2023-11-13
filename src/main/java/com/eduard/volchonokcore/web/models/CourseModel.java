@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -14,4 +16,5 @@ public class CourseModel {
     private Integer course_id;
     private String name;
     private String description;
+    private List<ReviewModel> reviews;
 }
