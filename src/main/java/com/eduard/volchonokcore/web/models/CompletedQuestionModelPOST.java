@@ -5,12 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ListOfIds {
-    private List<Integer> ids;
+public class CompletedQuestionModelPOST {
+    private Integer test_id;
+    private Integer question_id;
+    private Integer answer_id;
 }

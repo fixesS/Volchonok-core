@@ -57,13 +57,13 @@ public class QuestionController {
             for(Answer answer: answers){
                 answerModels.add(
                         AnswerModel.builder()
+                        .explanation(answer.getExplanation())
                         .id(answer.getAnswerId())
                         .text(answer.getText())
                         .is_right(answer.getIsRight())
                         .build()
                 );
             }
-
 
         }catch (Exception e){
             log.error(e.getMessage(),e.getClass());
@@ -79,7 +79,6 @@ public class QuestionController {
                         .question_id(question.getQuestionId())
                         .test_id(question.getTest().getTestId())
                         .text(question.getText())
-                        .explanation(question.getExplanation())
                         .answers(answerModels)
                         .build();
                 ApiOk<QuestionModel> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), questionModel);

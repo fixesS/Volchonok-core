@@ -18,15 +18,12 @@ public class Question {
     @Id
     @Column(name = "questionid")
     private Integer questionId;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "testid")
     private Test test;
 
     @Column
     private String text;
-
-    @Column
-    private String explanation;
 
 
 

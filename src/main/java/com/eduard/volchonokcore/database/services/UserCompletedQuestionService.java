@@ -2,7 +2,6 @@ package com.eduard.volchonokcore.database.services;
 
 import com.eduard.volchonokcore.database.entities.User;
 import com.eduard.volchonokcore.database.entities.UserCompletedQuestion;
-import com.eduard.volchonokcore.database.entities.UserCourse;
 import com.eduard.volchonokcore.database.repositories.UserCompletedQuestionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +24,10 @@ public class UserCompletedQuestionService {
         userCompletedQuestionRepository.save(userCompletedQuestion);
     }
     @Transactional
+    public void createAll(List<UserCompletedQuestion> completedQuestions){
+        userCompletedQuestionRepository.saveAll(completedQuestions);
+    }
+    @Transactional
     public void updateUserCourse(UserCompletedQuestion userCompletedQuestion){
         userCompletedQuestionRepository.save(userCompletedQuestion);
     }
@@ -34,6 +37,6 @@ public class UserCompletedQuestionService {
     }
     @Transactional
     public UserCompletedQuestion findByUser(User user){
-        return userCompletedQuestionRepository.findByUserid(user);
+        return userCompletedQuestionRepository.findByUser(user);
     }
 }

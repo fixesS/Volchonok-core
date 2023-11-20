@@ -26,7 +26,7 @@ public class Test {
     @Column
     private Integer duration;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "lessonid")
     private Lesson lesson;
 

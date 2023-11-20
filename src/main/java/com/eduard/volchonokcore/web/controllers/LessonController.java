@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -62,14 +63,14 @@ public class LessonController {
         switch (response){
             case OK -> {
                 LessonModel lessonModel = LessonModel.builder()
-                        .lesson_id(lesson.getLessonId())
+                        .lesson_id(Optional.ofNullable(lesson.getLessonId()).orElse(-1000))
                         .name(lesson.getName())
                         .description(lesson.getDescription())
                         .module_id(lesson.getModule().getModuleId())
                         .number(lesson.getNumber())
                         .chat_text(lesson.getChatText())
                         .duration(lesson.getDuration())
-                        .video(lesson.getVideo())
+                        .video(String.valueOf(lesson.getVideo()))
                         .build();
                 ApiOk<LessonModel> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), lessonModel);
                 body = gsonParser.apiOkToJson(apiOk);

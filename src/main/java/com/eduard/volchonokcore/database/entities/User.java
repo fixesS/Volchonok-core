@@ -61,24 +61,34 @@ public class User implements UserDetails {//todo ФИО
             joinColumns = @JoinColumn(name = "userid"),
             inverseJoinColumns = @JoinColumn(name = "courseid"))
     private Set<Course> courses;
-    @ManyToMany(targetEntity = Question.class,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "users_completed_questions",
-            joinColumns = @JoinColumn(name = "userid"),
-            inverseJoinColumns = @JoinColumn(name = "questionid"))
-    private Set<Question> questions;
+    @OneToMany(targetEntity = UserCompletedQuestion.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "userid")
+    private Set<UserCompletedQuestion> completedQuestions;
     @ManyToMany(targetEntity = Lesson.class,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "users_completed_lessons",
             joinColumns = @JoinColumn(name = "userid"),
             inverseJoinColumns = @JoinColumn(name = "lessonid"))
-    private Set<Lesson> lessons;
+    private Set<Lesson> completedLessons;
     @ManyToMany(targetEntity = Test.class,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "users_completed_tests",
             joinColumns = @JoinColumn(name = "userid"),
             inverseJoinColumns = @JoinColumn(name = "testid"))
-    private Set<Test> tests;
+    private Set<Test> completedTests;
+    @ManyToMany(targetEntity = Module.class,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "users_completed_modules",
+            joinColumns = @JoinColumn(name = "userid"),
+            inverseJoinColumns = @JoinColumn(name = "moduleid"))
+    private Set<Module> completedModules;
+
+    @ManyToMany(targetEntity = Course.class,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "users_completed_courses",
+            joinColumns = @JoinColumn(name = "userid"),
+            inverseJoinColumns = @JoinColumn(name = "courseid"))
+    private Set<Course> completedCourses;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

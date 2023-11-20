@@ -23,4 +23,7 @@ public class Answer {
     private String text;
     @Column(name = "is_right")
     private Boolean isRight;
+
+    @Column
+    private String explanation;
 }

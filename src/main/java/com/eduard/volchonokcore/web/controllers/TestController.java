@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -66,7 +67,7 @@ public class TestController {
                         .name(test.getName())
                         .description(test.getDescription())
                         .lesson_id(test.getLesson().getLessonId())
-                        .duration(test.getDuration())
+                        .duration(Optional.ofNullable(test.getDuration()).orElse(-1000))
                         .build();
                 ApiOk<TestModel> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), testModel);
                 body = gsonParser.apiOkToJson(apiOk);

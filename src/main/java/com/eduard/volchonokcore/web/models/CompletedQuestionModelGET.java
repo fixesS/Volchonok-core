@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnswerModel {
-    private Integer id;
-    private String text;
-    private boolean is_right;
+public class CompletedQuestionModelGET {
+    private Integer question_id;
+    private Integer answer_id;
+    private Integer test_id;
+    private Boolean is_right;
     private String explanation;
 }
