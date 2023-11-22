@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -14,5 +15,5 @@ import java.util.List;
 public class CompletedQuestionModelPOST {
     private Integer test_id;
     private Integer question_id;
-    private List<Integer> answers;
+    private Set<Integer> answers;
 }

@@ -61,6 +61,17 @@ public class AnswerService {
         //log.info("Smmary: "+flag);
         return flag;
     }
+    public boolean checkIfExist(List<Integer> ids){
+        boolean flag = true;
+        for(Integer id: ids){
+            if(findById(id)==null){
+                flag = false;
+                break;
+            }
+        }
+        return flag;
+    }
+
     @Transactional
     public List<Answer> findAll(){
         return answerRepository.findAll();

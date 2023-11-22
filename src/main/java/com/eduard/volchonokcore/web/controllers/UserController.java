@@ -395,14 +395,17 @@ public class UserController {
                         }
                         Question question = questionService.findById(completedQuestionModel.getQuestion_id());
                         List<Integer> answers = answerService.findAllIdsByQuestion(question);
-                        log.info(answers.toString());
-                        log.info(completedQuestionModel.getAnswers().toString());
-                        if(!answerService.containsAnswer(answers, completedQuestionModel.getAnswers())) {
+                        if(!answerService.checkIfExist(completedQuestionModel.getAnswers().stream().toList())){
+                            response = ApiResponse.ANSWER_DOES_NOT_EXIST;
+                            flag = false;
+                            break;
+                        }
+                        if(!answerService.containsAnswer(answers, completedQuestionModel.getAnswers().stream().toList())) {
                             response = ApiResponse.ANSWER_DOES_NOT_REFERENCE_TO_QUESTION;
                             flag = false;
                             break;
                         }
-                        List<Answer> answers1 = answerService.findAllByIds(completedQuestionModel.getAnswers());
+                        List<Answer> answers1 = answerService.findAllByIds(completedQuestionModel.getAnswers().stream().toList());
                         {//Если все сущетсвует
                             userCompletedTestService.createUserCompletedTest(userCompletedTest);
                             UserCompletedQuestion userCompletedQuestion = UserCompletedQuestion
@@ -422,7 +425,6 @@ public class UserController {
                         }
                     }
                     if(flag){// Если все  сущствует, то добавить их и сохранить в базе
-                        log.info(completedQuestions.toString());
                         userCompletedQuestionService.createAll(completedQuestions);
                         selectedAnswersService.createAll(selectedAnswersList);
                         user.getCompletedTests().add(test);
