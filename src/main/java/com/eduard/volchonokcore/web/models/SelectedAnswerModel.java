@@ -11,8 +11,10 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompletedQuestionModelPOST {
-    private Integer test_id;
-    private Integer question_id;
-    private List<Integer> answers;
+public class SelectedAnswerModel {
+
+    private Integer answer_id;
+    private String text;
+    private Boolean is_right;
+    private String explanation;
 }

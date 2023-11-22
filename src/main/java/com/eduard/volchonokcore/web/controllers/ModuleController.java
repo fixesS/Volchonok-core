@@ -71,6 +71,8 @@ public class ModuleController {
                         .module_id(module.getModuleId())
                         .course_id(module.getCourse().getCourseId())
                         .number(module.getNumber())
+                        .name(module.getName())
+                        .description(module.getDescription())
                         .build();
                 ApiOk<ModuleModel> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), moduleModel);
                 body = gsonParser.apiOkToJson(apiOk);

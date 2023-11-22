@@ -19,7 +19,8 @@ public enum ApiResponse {
     LESSON_DOES_NOT_EXIST(-12000,"Lesson does not exist", HttpStatus.BAD_REQUEST),
     MODULE_DOES_NOT_EXIST(-13000,"Module does not exist", HttpStatus.BAD_REQUEST),
     COURSE_DOES_NOT_EXIST(-14000,"Course does not exist", HttpStatus.BAD_REQUEST),
-    ANSWER_DOES_NOT_EXIST(-15000,"Answer does not exist", HttpStatus.BAD_REQUEST);
+    ANSWER_DOES_NOT_EXIST(-15000,"Answer does not exist", HttpStatus.BAD_REQUEST),
+    ANSWER_DOES_NOT_REFERENCE_TO_QUESTION(-15000,"Answer does not reference to question", HttpStatus.BAD_REQUEST);
 
     @Getter
     private Integer statusCode;

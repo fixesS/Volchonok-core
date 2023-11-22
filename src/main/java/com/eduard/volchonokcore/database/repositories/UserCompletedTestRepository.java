@@ -7,8 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface UserCompletedQuestionRepository extends JpaRepository<UserCompletedQuestion, Integer> {
-    List<UserCompletedQuestion> findAllByUserCompletedTest(UserCompletedTest userCompletedTest);
+public interface UserCompletedTestRepository extends JpaRepository<UserCompletedTest, Integer>{
+    List<UserCompletedTest> findAllByUserid(Integer userid);
+    Optional<UserCompletedTest> findFirstByUseridAndTestid(Integer userid, Integer testid);
+
 }

@@ -38,12 +38,14 @@ public class UserController {
     private TestService testService;
     @Autowired
     private ModuleService moduleService;
-
     @Autowired
     private AnswerService answerService;
-
     @Autowired
     private UserCompletedQuestionService userCompletedQuestionService;
+    @Autowired
+    private SelectedAnswersService selectedAnswersService;
+    @Autowired
+    private UserCompletedTestService userCompletedTestService;
 
     @GetMapping("/me")
     @Operation(
@@ -272,21 +274,19 @@ public class UserController {
         }
         return new ResponseEntity<>(body,response.getStatus());
     }
-    @GetMapping("/completed/questions")
+    @GetMapping("/completed/questions/{testId}")
     @Operation(
             summary = "User completed questions info",
             description = "Gives all questions completed by user"
     )
-    public ResponseEntity<String> handleGetUserCompletedQuestions(HttpServletRequest request) throws UnknownHostException {
+    public ResponseEntity<String> handleGetUserCompletedQuestions(HttpServletRequest request,@PathVariable int testId) throws UnknownHostException {
         ApiResponse response;
         GsonParser gsonParser = new GsonParser();
         String body = "";
         User user = null;
         List<CompletedQuestionModelGET> completedQuestionModels  = new ArrayList<>();//Список id вопросов, на которые пользователь ответил верно
-
         UUID sessionUuid = (UUID) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Session session = sessionService.findByUuid(sessionUuid);
-
         try {
             if(session==null){
                 response = ApiResponse.SESSION_DOES_NOT_EXIST;
@@ -297,15 +297,33 @@ public class UserController {
                     response = ApiResponse.USER_DOES_NOT_EXIST;
                 }
                 else{//Если пользователь существует
-                    for(UserCompletedQuestion userCompletedQuestion: user.getCompletedQuestions() ){
-                        CompletedQuestionModelGET completedQuestionModelGET = CompletedQuestionModelGET.builder()
-                                .question_id(userCompletedQuestion.getQuestion().getQuestionId())
-                                .answer_id(userCompletedQuestion.getAnswer().getAnswerId())
-                                .test_id(userCompletedQuestion.getTest().getTestId())
-                                .explanation(userCompletedQuestion.getAnswer().getExplanation())
-                                .is_right(userCompletedQuestion.getAnswer().getIsRight())
-                                .build();
-                        completedQuestionModels.add(completedQuestionModelGET);
+                    List<UserCompletedTest> tests = userCompletedTestService.findAllByUser(user);
+                    for(UserCompletedTest userCompletedTest: tests){
+                        if(userCompletedTest.getTestid()==testId){// если нужный тест
+
+                            List<UserCompletedQuestion> userCompletedQuestions = userCompletedQuestionService.findAllByUserCompletedTest(userCompletedTest);
+                            for(UserCompletedQuestion userCompletedQuestion: userCompletedQuestions){
+                                List<SelectedAnswers> selectedAnswers = selectedAnswersService.findAllByUserCompletedQuestion(userCompletedQuestion);
+                                List<SelectedAnswerModel> answers = new ArrayList<>();
+                                for(SelectedAnswers selectedAnswer: selectedAnswers){
+                                    answers.add(
+                                            SelectedAnswerModel.builder()
+                                                    .answer_id(selectedAnswer.getAnswer().getAnswerId())
+                                                    .text(selectedAnswer.getAnswer().getText())
+                                                    .explanation(selectedAnswer.getAnswer().getExplanation())
+                                                    .is_right(selectedAnswer.getAnswer().getIsRight())
+                                                    .build()
+                                    );
+                                }
+                                CompletedQuestionModelGET completedQuestionModelGET = CompletedQuestionModelGET.builder()
+                                        .question_id(userCompletedQuestion.getQuestion().getQuestionId())
+                                        .answers(answers)
+                                        .test_id(userCompletedTest.getTestid())
+                                        .build();
+                                completedQuestionModels.add(completedQuestionModelGET);
+                            }
+                        }
+
                     }
                     response = ApiResponse.OK;
                 }
@@ -338,11 +356,11 @@ public class UserController {
         GsonParser gsonParser = new GsonParser();
         String body = "";
         User user = null;
+        Test test = null;
         List<UserCompletedQuestion> completedQuestions = new ArrayList<>();// список курсов, для добавления к пользователю
-
+        List<SelectedAnswers> selectedAnswersList = new ArrayList<>();
         UUID sessionUuid = (UUID) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Session session = sessionService.findByUuid(sessionUuid);
-
         try {
             if(session==null){
                 response = ApiResponse.SESSION_DOES_NOT_EXIST;
@@ -356,11 +374,18 @@ public class UserController {
                     response = ApiResponse.OK;
                     boolean flag = true; //Флаг того, что все курсы существуют
                     for(CompletedQuestionModelPOST completedQuestionModel : list.getList()){
-                        Test test = testService.findById(completedQuestionModel.getTest_id());
+                        test = testService.findById(completedQuestionModel.getTest_id());
                         if(test==null) {//Если теста нет, то ошибка и выход с цикла
                             response = ApiResponse.TEST_DOES_NOT_EXIST;
                             flag = false;
                             break;
+                        }
+                        UserCompletedTest userCompletedTest = userCompletedTestService.findAllByUserAndTest(user,test);
+                        if(userCompletedTest==null) {//Если теста нет, то ошибка и выход с цикла
+                            userCompletedTest = UserCompletedTest.builder()
+                                    .userid(user.getUserId())
+                                    .testid(test.getTestId())
+                                    .build();
                         }
                         List<Integer> questions = questionService.findAllIdsByTest(test);
                         if(!questions.contains(completedQuestionModel.getQuestion_id())) {//Если вопроса нет, то ошибка и выход с цикла
@@ -370,26 +395,37 @@ public class UserController {
                         }
                         Question question = questionService.findById(completedQuestionModel.getQuestion_id());
                         List<Integer> answers = answerService.findAllIdsByQuestion(question);
-                        if(!answers.contains(completedQuestionModel.getAnswer_id())) {//Если ответа нет, то ошибка и выход с цикла
-                            response = ApiResponse.ANSWER_DOES_NOT_EXIST;
+                        log.info(answers.toString());
+                        log.info(completedQuestionModel.getAnswers().toString());
+                        if(!answerService.containsAnswer(answers, completedQuestionModel.getAnswers())) {
+                            response = ApiResponse.ANSWER_DOES_NOT_REFERENCE_TO_QUESTION;
                             flag = false;
                             break;
                         }
-                        Answer answer = answerService.findById(completedQuestionModel.getAnswer_id());
+                        List<Answer> answers1 = answerService.findAllByIds(completedQuestionModel.getAnswers());
                         {//Если все сущетсвует
+                            userCompletedTestService.createUserCompletedTest(userCompletedTest);
                             UserCompletedQuestion userCompletedQuestion = UserCompletedQuestion
                                     .builder()
                                     .question(question)
-                                    .answer(answer)
-                                    .test(test)
-                                    .user(user.getUserId())
+                                    .userCompletedTest(userCompletedTest)
+                                    .isRight(answers1.get(0).getIsRight())
                                     .build();
                             completedQuestions.add(userCompletedQuestion);
+                            for(Answer answer: answers1){
+                                SelectedAnswers selectedAnswers = SelectedAnswers.builder()
+                                        .answer(answer)
+                                        .userCompletedQuestion(userCompletedQuestion)
+                                        .build();
+                                selectedAnswersList.add(selectedAnswers);
+                            }
                         }
                     }
                     if(flag){// Если все  сущствует, то добавить их и сохранить в базе
+                        log.info(completedQuestions.toString());
                         userCompletedQuestionService.createAll(completedQuestions);
-                        user.getCompletedQuestions().addAll(completedQuestions);
+                        selectedAnswersService.createAll(selectedAnswersList);
+                        user.getCompletedTests().add(test);
                         userService.update(user);
                     }
                 }

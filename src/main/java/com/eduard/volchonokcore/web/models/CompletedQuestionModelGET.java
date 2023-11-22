@@ -5,14 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompletedQuestionModelGET {
     private Integer question_id;
-    private Integer answer_id;
     private Integer test_id;
-    private Boolean is_right;
-    private String explanation;
+    private List<SelectedAnswerModel> answers;
 }

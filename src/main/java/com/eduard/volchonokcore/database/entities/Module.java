@@ -24,4 +24,9 @@ public class Module {
     @Column
     private Integer number;
 
+    @Column
+    private String name;
+    @Column
+    private String description;
+
 }

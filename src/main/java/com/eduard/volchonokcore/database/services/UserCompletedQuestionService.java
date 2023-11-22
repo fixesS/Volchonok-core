@@ -2,6 +2,7 @@ package com.eduard.volchonokcore.database.services;
 
 import com.eduard.volchonokcore.database.entities.User;
 import com.eduard.volchonokcore.database.entities.UserCompletedQuestion;
+import com.eduard.volchonokcore.database.entities.UserCompletedTest;
 import com.eduard.volchonokcore.database.repositories.UserCompletedQuestionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class UserCompletedQuestionService {
         return userCompletedQuestionRepository.findAll();
     }
     @Transactional
-    public UserCompletedQuestion findByUser(User user){
-        return userCompletedQuestionRepository.findByUser(user);
+    public List<UserCompletedQuestion> findAllByUserCompletedTest(UserCompletedTest userCompletedTest){
+        return userCompletedQuestionRepository.findAllByUserCompletedTest(userCompletedTest);
     }
 }

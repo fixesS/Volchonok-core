@@ -7,6 +7,7 @@ import com.eduard.volchonokcore.database.entities.Test;
 import com.eduard.volchonokcore.database.repositories.AnswerRepository;
 import com.eduard.volchonokcore.database.repositories.TestRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class AnswerService {
     @Autowired
     private AnswerRepository answerRepository;
@@ -33,6 +35,31 @@ public class AnswerService {
             answersIds.add(answer.getAnswerId());
         }
         return answersIds;
+    }
+    public List<Answer> findAllByIds(List<Integer> ids){
+        List<Answer> answers = new ArrayList<>();
+        for(Integer id: ids){
+            Answer answer = findById(id);
+            if(answer!=null){
+                answers.add(answer);
+            }
+        }
+        return answers;
+    }
+    public boolean containsAnswer(List<Integer> lhs, List<Integer> rhs){
+        //log.info("lhs:"+lhs.toString());
+        //log.info("rhs:"+rhs.toString());
+        boolean flag = true;
+        for(Integer id: rhs){
+            if(!lhs.contains(id)){
+                //log.info(lhs.toString()+" - lhs doesnt have "+id);
+                flag = false;
+                break;
+            }
+            //log.info(lhs.toString()+" - lhs have "+id);
+        }
+        //log.info("Smmary: "+flag);
+        return flag;
     }
     @Transactional
     public List<Answer> findAll(){

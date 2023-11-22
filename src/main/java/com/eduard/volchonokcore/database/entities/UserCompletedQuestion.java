@@ -22,17 +22,13 @@ public class UserCompletedQuestion {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
-    @Column(name = "userid")
-    private Integer user;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "questionid")
+    @JoinColumn(name = "question_id")
     private Question question;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "testid")
-    private Test test;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "answerid")
-    private Answer answer;
-
+    @JoinColumn(name = "completed_test_id")
+    private UserCompletedTest userCompletedTest;
+    @Column(name = "is_right")
+    private Boolean isRight;
 
 }

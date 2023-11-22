@@ -13,4 +13,6 @@ public class ModuleModel {
     private Integer module_id;
     private Integer course_id;
     private Integer number;
+    private String name;
+    private String description;
 }

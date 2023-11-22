@@ -61,9 +61,6 @@ public class User implements UserDetails {//todo ФИО
             joinColumns = @JoinColumn(name = "userid"),
             inverseJoinColumns = @JoinColumn(name = "courseid"))
     private Set<Course> courses;
-    @OneToMany(targetEntity = UserCompletedQuestion.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "userid")
-    private Set<UserCompletedQuestion> completedQuestions;
     @ManyToMany(targetEntity = Lesson.class,fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(
             name = "users_completed_lessons",
