@@ -9,4 +9,6 @@ import java.util.List;
 public interface AnswerRepository extends JpaRepository<Answer, Integer> {
     List<Answer> findAllByQuestion(Question question);
 
+    List<Answer> findAllByQuestionAndIsRight(Question question, Boolean isRight);
+
 }

@@ -23,9 +23,9 @@ public class UserCourse {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
-    @Column(name = "userid")
+    @Column(name = "user_id")
     private Integer userid;
-    @Column(name = "courseid")
+    @Column(name = "course_id")
     private Integer courseid;
 
 

@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 @Table(name = "lessons", schema = "public")
 public class Lesson {
     @Id
-    @Column(name = "lessonid")
+    @Column(name = "lesson_id")
     private Integer lessonId;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "moduleid")
+    @JoinColumn(name = "module_id")
     private Module module;
     @Column
     private Integer number;
@@ -27,8 +27,6 @@ public class Lesson {
     private String description;
     @Column(name = "chat_text")
     private String chatText;
-    @Column
-    private String video;
     @Column
     private Integer duration;
 }

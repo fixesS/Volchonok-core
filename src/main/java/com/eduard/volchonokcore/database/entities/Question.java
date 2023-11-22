@@ -16,10 +16,10 @@ import java.util.List;
 @Table(name = "questions", schema = "public")
 public class Question {
     @Id
-    @Column(name = "questionid")
+    @Column(name = "question_id")
     private Integer questionId;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "testid")
+    @JoinColumn(name = "test_id")
     private Test test;
 
     @Column

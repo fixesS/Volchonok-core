@@ -276,7 +276,7 @@ public class CourseController {
     @PostMapping("{courseId}/review")
     @Operation(
             summary = "Get course questions",
-            description = "Gives all questions ids in the course by course id"
+            description = "Gives all review ids in the course by course id"
     )
     public ResponseEntity<String> handleGetQuestionsByCourseId(HttpServletRequest request, @Validated @RequestBody ReviewModel reviewModel , @PathVariable int courseId) throws UnknownHostException {
         ApiResponse response = ApiResponse.UNKNOWN_ERROR;

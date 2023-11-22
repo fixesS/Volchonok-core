@@ -18,8 +18,8 @@ public class UserCompletedModule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
 
-    @Column(name = "userid")
+    @Column(name = "user_id")
     private Integer userid;
-    @Column(name = "moduleid")
+    @Column(name = "module_id")
     private Integer moduleid;
 }

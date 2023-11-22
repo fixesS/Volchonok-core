@@ -19,8 +19,8 @@ public class UserCompletedLesson {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
-    @Column(name = "userid")
+    @Column(name = "user_id")
     private Integer userid;
-    @Column(name = "lessonid")
+    @Column(name = "lesson_id")
     private Integer lessonid;
 }

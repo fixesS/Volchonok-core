@@ -70,7 +70,6 @@ public class LessonController {
                         .number(lesson.getNumber())
                         .chat_text(lesson.getChatText())
                         .duration(lesson.getDuration())
-                        .video(String.valueOf(lesson.getVideo()))
                         .build();
                 ApiOk<LessonModel> apiOk = ApiResponse.getApiOk(response.getStatusCode(), response.getMessage(), lessonModel);
                 body = gsonParser.apiOkToJson(apiOk);

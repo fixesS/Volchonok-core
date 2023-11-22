@@ -1,17 +1,15 @@
 package com.eduard.volchonokcore.database.services;
 
 import com.eduard.volchonokcore.database.entities.Answer;
-import com.eduard.volchonokcore.database.entities.Lesson;
 import com.eduard.volchonokcore.database.entities.Question;
-import com.eduard.volchonokcore.database.entities.Test;
 import com.eduard.volchonokcore.database.repositories.AnswerRepository;
-import com.eduard.volchonokcore.database.repositories.TestRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -27,6 +25,10 @@ public class AnswerService {
     @Transactional
     public List<Answer> findAllByQuestion(Question question){
         return answerRepository.findAllByQuestion(question);
+    }
+    @Transactional
+    public List<Answer> findAllByQuestionAndIsRight(Question question, Boolean isRight){
+        return answerRepository.findAllByQuestionAndIsRight(question,isRight);
     }
     public List<Integer> findAllIdsByQuestion(Question question){
         List<Answer> answers = findAllByQuestion(question);
@@ -71,13 +73,17 @@ public class AnswerService {
         }
         return flag;
     }
-    public boolean checkIfAllIsRigth(List<Answer> answers){
+    public boolean checkIfAllIsRight(List<Answer> answers, Question question){
         boolean flag = true;
         for(Answer answer: answers){
             if(!answer.getIsRight()){
                 flag = false;
                 break;
             }
+        }
+        List<Answer> trueAnswers = findAllByQuestionAndIsRight(question, true);
+        if(! new HashSet<>(answers).containsAll(trueAnswers)){
+            flag = false;
         }
         return flag;
     }

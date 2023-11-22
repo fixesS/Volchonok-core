@@ -415,7 +415,7 @@ public class UserController {
                                             .builder()
                                             .question(question)
                                             .userCompletedTest(userCompletedTest)
-                                            .isRight(answerService.checkIfAllIsRigth(answers1))
+                                            .isRight(answerService.checkIfAllIsRight(answers1,question))
                                             .build();
                                     completedQuestions.add(userCompletedQuestion);
                                     for(Answer answer: answers1){

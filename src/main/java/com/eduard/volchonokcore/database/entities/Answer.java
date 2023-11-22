@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 @Table(name = "answers", schema = "public")
 public class Answer {
     @Id
-    @Column(name = "answerid")
+    @Column(name = "answer_id")
     private Integer answerId;
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "questionid")
+    @JoinColumn(name = "question_id")
     private Question question;
     @Column
     private String text;

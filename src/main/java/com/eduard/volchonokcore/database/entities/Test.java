@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "test", schema = "public")
+@Table(name = "tests", schema = "public")
 public class Test {
     @Id
-    @Column(name = "testid")
+    @Column(name = "test_id")
     private Integer testId;
     @Column
     private String name;
@@ -27,7 +27,7 @@ public class Test {
     private Integer duration;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "lessonid")
+    @JoinColumn(name = "lesson_id")
     private Lesson lesson;
 
 }

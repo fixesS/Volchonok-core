@@ -18,8 +18,8 @@ public class UserCompletedTest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
 
-    @Column(name = "userid")
+    @Column(name = "user_id")
     private Integer userid;
-    @Column(name = "testid")
+    @Column(name = "test_id")
     private Integer testid;
 }

@@ -19,10 +19,10 @@ import java.util.UUID;
 @Table(name = "sessions_mobile", schema = "public")
 public class Session {
     @Id
-    @Column(columnDefinition = "BINARY(16)", name = "sessionuuid")
+    @Column(columnDefinition = "BINARY(16)", name = "session_uuid")
     private UUID sessionUuid;
     @OneToOne
-    @JoinColumn(name = "userid")
+    @JoinColumn(name = "user_id")
     private User user;
     @Column(name = "useragent")
     private String userAgent;

@@ -15,15 +15,15 @@ import lombok.NoArgsConstructor;
 @Table(name = "reviews", schema = "public")
 public class Review {
     @Id
-    @Column(name = "reviewid")
+    @Column(name = "review_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer reviewId;
     @ManyToOne
-    @JoinColumn(name = "userid")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "courseid")
+    @JoinColumn(name = "course_id")
     private Course course;
 
     @Column(name = "review_text")

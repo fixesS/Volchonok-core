@@ -21,5 +21,4 @@ public class LessonModel {
     private Integer number;
     private String chat_text;
     private Integer duration;
-    private String video;
 }
