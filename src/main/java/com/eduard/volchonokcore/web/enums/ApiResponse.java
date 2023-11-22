@@ -20,7 +20,10 @@ public enum ApiResponse {
     MODULE_DOES_NOT_EXIST(-13000,"Module does not exist", HttpStatus.BAD_REQUEST),
     COURSE_DOES_NOT_EXIST(-14000,"Course does not exist", HttpStatus.BAD_REQUEST),
     ANSWER_DOES_NOT_EXIST(-15000,"Answer does not exist", HttpStatus.BAD_REQUEST),
-    ANSWER_DOES_NOT_REFERENCE_TO_QUESTION(-15000,"Answer does not reference to question", HttpStatus.BAD_REQUEST);
+    ANSWER_DOES_NOT_REFERENCE_TO_QUESTION(-16000,"Answer does not reference to question", HttpStatus.BAD_REQUEST),
+    TEST_HAVE_BEEN_COMPLETED_ALREADY(-17000,"Test you trying complete have been completed already", HttpStatus.BAD_REQUEST),
+    NOT_ALL_QUESTIONS_OF_TEST(-18000,"Test you trying complete has some questions you did not complete", HttpStatus.BAD_REQUEST),
+    QUESTION_DOES_NOT_REFERENCE_TO_TEST(-18000,"Question does not reference to test", HttpStatus.BAD_REQUEST);
 
     @Getter
     private Integer statusCode;

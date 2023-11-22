@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -30,6 +31,11 @@ public class QuestionService {
             questionsIds.add(question.getQuestionId());
         }
         return questionsIds;
+    }
+    public boolean checkIfAllIdsInAllIdsByTest(List<Integer> questionsIdsList,Test test){
+        List<Integer> trueQusetionIdsList = findAllIdsByTest(test);
+        return new HashSet<>(questionsIdsList).containsAll(trueQusetionIdsList);
+
     }
     @Transactional
     public List<Question> findAll(){

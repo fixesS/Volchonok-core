@@ -14,5 +14,6 @@ import java.util.List;
 public class CompletedQuestionModelGET {
     private Integer question_id;
     private Integer test_id;
+    private Boolean is_right;
     private List<SelectedAnswerModel> answers;
 }

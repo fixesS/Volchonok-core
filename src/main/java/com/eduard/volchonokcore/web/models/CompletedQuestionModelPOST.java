@@ -13,7 +13,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CompletedQuestionModelPOST {
-    private Integer test_id;
     private Integer question_id;
     private Set<Integer> answers;
 }

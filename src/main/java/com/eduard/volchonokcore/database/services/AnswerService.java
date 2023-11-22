@@ -62,7 +62,7 @@ public class AnswerService {
         return flag;
     }
     public boolean checkIfExist(List<Integer> ids){
-        boolean flag = true;
+        boolean flag = !ids.isEmpty();
         for(Integer id: ids){
             if(findById(id)==null){
                 flag = false;
@@ -71,7 +71,16 @@ public class AnswerService {
         }
         return flag;
     }
-
+    public boolean checkIfAllIsRigth(List<Answer> answers){
+        boolean flag = true;
+        for(Answer answer: answers){
+            if(!answer.getIsRight()){
+                flag = false;
+                break;
+            }
+        }
+        return flag;
+    }
     @Transactional
     public List<Answer> findAll(){
         return answerRepository.findAll();

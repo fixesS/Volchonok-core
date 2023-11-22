@@ -1,5 +1,6 @@
 package com.eduard.volchonokcore.database.services;
 
+import com.eduard.volchonokcore.database.entities.Question;
 import com.eduard.volchonokcore.database.entities.User;
 import com.eduard.volchonokcore.database.entities.UserCompletedQuestion;
 import com.eduard.volchonokcore.database.entities.UserCompletedTest;
@@ -8,6 +9,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,5 +41,12 @@ public class UserCompletedQuestionService {
     @Transactional
     public List<UserCompletedQuestion> findAllByUserCompletedTest(UserCompletedTest userCompletedTest){
         return userCompletedQuestionRepository.findAllByUserCompletedTest(userCompletedTest);
+    }
+    public List<Integer> toQuestionIdsList( List<UserCompletedQuestion> list){
+        List<Integer> questionsIds = new ArrayList<>();
+        for(UserCompletedQuestion userCompletedQuestion: list){
+            questionsIds.add(userCompletedQuestion.getQuestion().getQuestionId());
+        }
+        return questionsIds;
     }
 }
