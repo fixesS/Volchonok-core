@@ -33,12 +33,6 @@ import java.util.List;
 public class ModuleController {
     @Autowired
     private ModuleService moduleService;
-    @Autowired
-    private LessonService lessonService;
-    @Autowired
-    private TestService testService;
-    @Autowired
-    private QuestionService questionService;
 
     @GetMapping("{moduleId}")
     @Operation(
@@ -101,7 +95,7 @@ public class ModuleController {
             if(module == null){
                 response = ApiResponse.MODULE_DOES_NOT_EXIST;
             }else{
-                lessonsIds = lessonService.findAllIdsByModule(module);
+                lessonsIds = moduleService.findAllLessonsIdsByModuleId(moduleId);
                 response = ApiResponse.OK;
             }
 
@@ -140,10 +134,7 @@ public class ModuleController {
             if(module == null){
                 response = ApiResponse.MODULE_DOES_NOT_EXIST;
             }else{
-                List<Lesson> lessons = lessonService.findAllByModule(module);
-                for(Lesson lesson : lessons){
-                    testsIds.addAll(testService.findAllIdsByLesson(lesson));
-                }
+                testsIds = moduleService.findAllTestsIdsByModuleId(moduleId);
                 response = ApiResponse.OK;
             }
 
@@ -182,14 +173,7 @@ public class ModuleController {
             if(module == null){
                 response = ApiResponse.MODULE_DOES_NOT_EXIST;
             }else{
-                List<Lesson> lessons = lessonService.findAllByModule(module);
-                for(Lesson lesson: lessons){
-                    List<Test> tests = testService.findAllByLesson(lesson);
-                    for(Test test : tests){
-                        List<Integer> questions = questionService.findAllIdsByTest(test);
-                        questionIds.addAll(questions);
-                    }
-                }
+                questionIds = moduleService.findAllQuestionIdsByModuleId(moduleId);
                 response = ApiResponse.OK;
             }
 

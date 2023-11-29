@@ -29,14 +29,6 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
     @Autowired
-    private ModuleService moduleService;
-    @Autowired
-    private LessonService lessonService;
-    @Autowired
-    private TestService testService;
-    @Autowired
-    private QuestionService questionService;
-    @Autowired
     private SessionService sessionService;
     @Autowired
     private ReviewService reviewService;
@@ -116,7 +108,7 @@ public class CourseController {
             if(course == null){
                 response = ApiResponse.COURSE_DOES_NOT_EXIST;
             }else{
-                modulesIds = moduleService.findAllIdsByCourse(course);
+                modulesIds = courseService.findAllModulesIdsByCourseId(courseId);
                 response = ApiResponse.OK;
             }
 
@@ -155,10 +147,7 @@ public class CourseController {
             if(course == null){
                 response = ApiResponse.COURSE_DOES_NOT_EXIST;
             }else{
-                List<Module> modules = moduleService.findAllByCourse(course);
-                for(Module module: modules){
-                    lessonsIds.addAll(lessonService.findAllIdsByModule(module));
-                }
+                lessonsIds = courseService.findAllLessonsIdsByCourseId(courseId);
                 response = ApiResponse.OK;
             }
 
@@ -197,13 +186,7 @@ public class CourseController {
             if(course == null){
                 response = ApiResponse.COURSE_DOES_NOT_EXIST;
             }else{
-                List<Module> modules = moduleService.findAllByCourse(course);
-                for(Module module: modules){
-                    List<Lesson> lessons = lessonService.findAllByModule(module);
-                    for(Lesson lesson: lessons){
-                        testsIds.addAll(testService.findAllIdsByLesson(lesson));
-                    }
-                }
+                testsIds = courseService.findAllTestsIdsByCourseId(courseId);
                 response = ApiResponse.OK;
             }
 
@@ -242,16 +225,7 @@ public class CourseController {
             if(course == null){
                 response = ApiResponse.COURSE_DOES_NOT_EXIST;
             }else{
-                List<Module> modules = moduleService.findAllByCourse(course);
-                for(Module module: modules){
-                    List<Lesson> lessons = lessonService.findAllByModule(module);
-                    for(Lesson lesson: lessons){
-                        List<Test> tests = testService.findAllByLesson(lesson);
-                        for(Test test: tests){
-                            questionIds.addAll(questionService.findAllIdsByTest(test));
-                        }
-                    }
-                }
+                questionIds = courseService.findAllQuestionIdsByCourseId(courseId);
                 response = ApiResponse.OK;
             }
 

@@ -18,6 +18,7 @@ public class UserService {
     public void create(User user){
         userRepository.save(user);
     }
+
     @Transactional
     public void update(User user){
         userRepository.save(user);

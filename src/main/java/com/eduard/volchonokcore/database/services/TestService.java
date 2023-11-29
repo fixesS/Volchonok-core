@@ -32,6 +32,10 @@ public class TestService {
         return testsIds;
     }
     @Transactional
+    public List<Integer> findAllQuestionIdsByTestId(Integer testId){
+        return testRepository.findAllQuestionsIdsByTestId(testId);
+    }
+    @Transactional
     public List<Test> findAll(){
         return testRepository.findAll();
     }

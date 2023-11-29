@@ -18,7 +18,7 @@ public class Question {
     @Id
     @Column(name = "question_id")
     private Integer questionId;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "test_id")
     private Test test;
 

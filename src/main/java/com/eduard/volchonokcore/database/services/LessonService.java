@@ -32,6 +32,10 @@ public class LessonService {
         return lessonsIds;
     }
     @Transactional
+    public List<Integer> findAllTestsIdsByLessonId(Integer lessonId){
+        return lessonRepository.findAllQuestionsIdsByLessonId(lessonId);
+    }
+    @Transactional
     public List<Lesson> findAll(Integer id){
         return lessonRepository.findAll();
     }

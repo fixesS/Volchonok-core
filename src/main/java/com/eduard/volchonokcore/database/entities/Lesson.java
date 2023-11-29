@@ -16,7 +16,7 @@ public class Lesson {
     @Id
     @Column(name = "lesson_id")
     private Integer lessonId;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "module_id")
     private Module module;
     @Column

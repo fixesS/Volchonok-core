@@ -22,9 +22,24 @@ public class CourseService {
     public List<Course> findAll(){
         return courseRepository.findAll();
     }
-
     @Transactional
     public Course update(Course course){
         return courseRepository.save(course);
+    }
+    @Transactional
+    public List<Integer> findAllQuestionIdsByCourseId(Integer courseId){
+        return courseRepository.findAllQuestionsIdsByCourseId(courseId);
+    }
+    @Transactional
+    public List<Integer> findAllTestsIdsByCourseId(Integer courseId){
+        return courseRepository.findAllTestsIdsByCourseId(courseId);
+    }
+    @Transactional
+    public List<Integer> findAllLessonsIdsByCourseId(Integer courseId){
+        return courseRepository.findAllLessonsIdsByCourseId(courseId);
+    }
+    @Transactional
+    public List<Integer> findAllModulesIdsByCourseId(Integer courseId){
+        return courseRepository.findAllModulesIdsByCourseId(courseId);
     }
 }

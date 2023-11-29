@@ -15,7 +15,7 @@ public class SelectedAnswersService {
     @Autowired
     private SelectedAnswerRepository selectedAnswerRepository;
 
-    @Transactional
+
     private SelectedAnswers findById(Integer id){
         return selectedAnswerRepository.findById(id).orElse(null);
     }

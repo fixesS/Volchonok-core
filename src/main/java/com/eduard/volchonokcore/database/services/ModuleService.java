@@ -25,6 +25,7 @@ public class ModuleService {
     public List<Module> findAllByCourse(Course course){
         return moduleRepository.findAllByCourse(course);
     }
+    @Deprecated
     public List<Integer> findAllIdsByCourse(Course course){
         List<Module> modules = findAllByCourse(course);
         List<Integer> moduleIds = new ArrayList<>();
@@ -32,6 +33,18 @@ public class ModuleService {
             moduleIds.add(module.getModuleId());
         }
         return moduleIds;
+    }
+    @Transactional
+    public List<Integer> findAllQuestionIdsByModuleId(Integer moduleId){
+        return moduleRepository.findAllQuestionIdsByModuleId(moduleId);
+    }
+    @Transactional
+    public List<Integer> findAllTestsIdsByModuleId(Integer moduleId){
+        return moduleRepository.findAllTestsIdsByModuleId(moduleId);
+    }
+    @Transactional
+    public List<Integer> findAllLessonsIdsByModuleId(Integer moduleId){
+        return moduleRepository.findAllLessonsIdsByModuleId(moduleId);
     }
     @Transactional
     public List<Module> findAll(){

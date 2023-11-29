@@ -19,6 +19,7 @@ public class UserCourseService {
     public UserCourse createUserCourse(UserCourse userCourse){
         return userCourseRepository.saveAndFlush(userCourse);
     }
+
     @Transactional
     public void updateUserCourse(UserCourse userCourse){
         userCourseRepository.save(userCourse);

@@ -18,7 +18,7 @@ public class Module {
     @Id
     @Column(name = "module_id")
     private Integer moduleId;
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "course_id")
     private Course course;
     @Column
