@@ -76,7 +76,7 @@ public class UserController {
             }
         } catch (Exception e) {
             response = ApiResponse.UNKNOWN_ERROR;
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             log.error(e.getMessage());
         }
 
@@ -139,15 +139,14 @@ public class UserController {
                     user.setAddress(Optional.ofNullable(userModel.getAddress()).orElse(user.getAddress()));
                     user.setClassColumn(Optional.ofNullable(userModel.getClass_grade()).orElse(user.getClassColumn()));
                     user.setCoins(Optional.ofNullable(userModel.getCoins()).orElse(user.getCoins()));
-
+                    user.setMiddlename(Optional.ofNullable(userModel.getMidllename()).orElse(""));
                     userService.update(user);
-
                     response = ApiResponse.OK;
                 }
             }
         } catch (Exception e) {
             response = ApiResponse.UNKNOWN_ERROR;
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             log.error(e.getMessage());
         }
 
@@ -196,7 +195,7 @@ public class UserController {
             }
         } catch (Exception e) {
             response = ApiResponse.UNKNOWN_ERROR;
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             log.error(e.getMessage());
         }
 
@@ -258,7 +257,7 @@ public class UserController {
             }
         } catch (Exception e) {
             response = ApiResponse.UNKNOWN_ERROR;
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             log.error(e.getMessage());
         }
 
@@ -331,7 +330,7 @@ public class UserController {
             }
         } catch (Exception e) {
             response = ApiResponse.UNKNOWN_ERROR;
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             log.error(e.getMessage());
         }
 
@@ -377,74 +376,73 @@ public class UserController {
                     }else{// Если тест существует
                         UserCompletedTest userCompletedTest = userCompletedTestService.findAllByUserAndTest(user,test);
                         if(userCompletedTest!=null) {//Если тест не отмечен выполненным, то сделать это
-                            response = ApiResponse.TEST_HAVE_BEEN_COMPLETED_ALREADY;
-                        }else{
-                            userCompletedTest = UserCompletedTest.builder()
-                                    .userid(user.getUserId())
-                                    .testid(test.getTestId())
-                                    .build();
-                            response = ApiResponse.OK;
-                            boolean flag = true; //Флаг того, что все курсы существуют
-                            for(CompletedQuestionModelPOST completedQuestionModel : list.getList()){
-                                Question question = questionService.findById(completedQuestionModel.getQuestion_id());
-                                if(question==null){
-                                    response = ApiResponse.QUESTION_DOES_NOT_EXIST;
-                                    flag = false;
-                                    break;
-                                }
-                                List<Integer> questions = questionService.findAllIdsByTest(test);
-                                if(!questions.contains(completedQuestionModel.getQuestion_id())) {//Если вопроса нет, то ошибка и выход с цикла
-                                    response = ApiResponse.QUESTION_DOES_NOT_REFERENCE_TO_TEST;
-                                    flag = false;
-                                    break;
-                                }
-                                List<Integer> answers = answerService.findAllIdsByQuestion(question);
-                                if(!answerService.checkIfExist(completedQuestionModel.getAnswers().stream().toList())){
-                                    response = ApiResponse.ANSWER_DOES_NOT_EXIST;
-                                    flag = false;
-                                    break;
-                                }
-                                if(!answerService.containsAnswer(answers, completedQuestionModel.getAnswers().stream().toList())) {
-                                    response = ApiResponse.ANSWER_DOES_NOT_REFERENCE_TO_QUESTION;
-                                    flag = false;
-                                    break;
-                                }
-                                List<Answer> answers1 = answerService.findAllByIds(completedQuestionModel.getAnswers().stream().toList());
-                                {//Если все сущетсвует
-                                    UserCompletedQuestion userCompletedQuestion = UserCompletedQuestion
-                                            .builder()
-                                            .question(question)
-                                            .userCompletedTest(userCompletedTest)
-                                            .isRight(answerService.checkIfAllIsRight(answers1,question))
-                                            .build();
-                                    completedQuestions.add(userCompletedQuestion);
-                                    for(Answer answer: answers1){
-                                        SelectedAnswers selectedAnswers = SelectedAnswers.builder()
-                                                .answer(answer)
-                                                .userCompletedQuestion(userCompletedQuestion)
-                                                .build();
-                                        selectedAnswersList.add(selectedAnswers);
-                                    }
-                                }
-                            }
-                            if(!questionService.checkIfAllIdsInAllIdsByTest(userCompletedQuestionService.toQuestionIdsList(completedQuestions), test) && flag){
-                                response = ApiResponse.NOT_ALL_QUESTIONS_OF_TEST;
+                            userCompletedTestService.deleteUserCompletedTestByTestId(userCompletedTest.getTestid());
+                        }
+                        userCompletedTest = UserCompletedTest.builder()
+                                .userid(user.getUserId())
+                                .testid(test.getTestId())
+                                .build();
+                        response = ApiResponse.OK;
+                        boolean flag = true; //Флаг того, что все курсы существуют
+                        for(CompletedQuestionModelPOST completedQuestionModel : list.getList()){
+                            Question question = questionService.findById(completedQuestionModel.getQuestion_id());
+                            if(question==null){
+                                response = ApiResponse.QUESTION_DOES_NOT_EXIST;
                                 flag = false;
+                                break;
                             }
-                            if(flag){// Если все  сущствует, то добавить их и сохранить в базе
-                                userCompletedTestService.createUserCompletedTest(userCompletedTest);
-                                userCompletedQuestionService.createAll(completedQuestions);
-                                selectedAnswersService.createAll(selectedAnswersList);
-                                user.getCompletedTests().add(test);
-                                userService.update(user);
+                            List<Integer> questions = questionService.findAllIdsByTest(test);
+                            if(!questions.contains(completedQuestionModel.getQuestion_id())) {//Если вопроса нет, то ошибка и выход с цикла
+                                response = ApiResponse.QUESTION_DOES_NOT_REFERENCE_TO_TEST;
+                                flag = false;
+                                break;
                             }
+                            List<Integer> answers = answerService.findAllIdsByQuestion(question);
+                            if(!answerService.checkIfExist(completedQuestionModel.getAnswers().stream().toList())){
+                                response = ApiResponse.ANSWER_DOES_NOT_EXIST;
+                                flag = false;
+                                break;
+                            }
+                            if(!answerService.containsAnswer(answers, completedQuestionModel.getAnswers().stream().toList())) {
+                                response = ApiResponse.ANSWER_DOES_NOT_REFERENCE_TO_QUESTION;
+                                flag = false;
+                                break;
+                            }
+                            List<Answer> answers1 = answerService.findAllByIds(completedQuestionModel.getAnswers().stream().toList());
+                            {//Если все сущетсвует
+                                UserCompletedQuestion userCompletedQuestion = UserCompletedQuestion
+                                        .builder()
+                                        .question(question)
+                                        .userCompletedTest(userCompletedTest)
+                                        .isRight(answerService.checkIfAllIsRight(answers1,question))
+                                        .build();
+                                completedQuestions.add(userCompletedQuestion);
+                                for(Answer answer: answers1){
+                                    SelectedAnswers selectedAnswers = SelectedAnswers.builder()
+                                            .answer(answer)
+                                            .userCompletedQuestion(userCompletedQuestion)
+                                            .build();
+                                    selectedAnswersList.add(selectedAnswers);
+                                }
+                            }
+                        }
+                        if(!questionService.checkIfAllIdsInAllIdsByTest(userCompletedQuestionService.toQuestionIdsList(completedQuestions), test) && flag){
+                            response = ApiResponse.NOT_ALL_QUESTIONS_OF_TEST;
+                            flag = false;
+                        }
+                        if(flag){// Если все  сущствует, то добавить их и сохранить в базе
+                            userCompletedTestService.createUserCompletedTest(userCompletedTest);
+                            userCompletedQuestionService.createAll(completedQuestions);
+                            selectedAnswersService.createAll(selectedAnswersList);
+                            user.getCompletedTests().add(test);
+                            userService.update(user);
                         }
                     }
                 }
             }
         } catch (Exception e) {
             response = ApiResponse.UNKNOWN_ERROR;
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             log.error(e.getMessage());
         }
 
@@ -493,7 +491,7 @@ public class UserController {
             }
         } catch (Exception e) {
             response = ApiResponse.UNKNOWN_ERROR;
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             log.error(e.getMessage());
         }
 
@@ -538,6 +536,7 @@ public class UserController {
                     boolean flag = true; //Флаг того, что все курсы существуют
                     for(Integer id : listOf.getList()){
                         Lesson lesson = lessonService.finById(id);
+                        log.info(lesson.toString());
                         if(lesson ==null) {//Если урока нет, то ошибка и выход с цикла
                             response = ApiResponse.LESSON_DOES_NOT_EXIST;
                             flag = false;
@@ -555,7 +554,7 @@ public class UserController {
             }
         } catch (Exception e) {
             response = ApiResponse.UNKNOWN_ERROR;
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             log.error(e.getMessage());
         }
 
@@ -604,7 +603,7 @@ public class UserController {
             }
         } catch (Exception e) {
             response = ApiResponse.UNKNOWN_ERROR;
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             log.error(e.getMessage());
         }
 
@@ -620,6 +619,7 @@ public class UserController {
         }
         return new ResponseEntity<>(body,response.getStatus());
     }
+    @Deprecated
     @PostMapping("/completed/tests")
     @Operation(
             summary = "User completed tests info",
@@ -666,7 +666,7 @@ public class UserController {
             }
         } catch (Exception e) {
             response = ApiResponse.UNKNOWN_ERROR;
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             log.error(e.getMessage());
         }
 
@@ -715,7 +715,7 @@ public class UserController {
             }
         } catch (Exception e) {
             response = ApiResponse.UNKNOWN_ERROR;
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             log.error(e.getMessage());
         }
 
@@ -777,7 +777,7 @@ public class UserController {
             }
         } catch (Exception e) {
             response = ApiResponse.UNKNOWN_ERROR;
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             log.error(e.getMessage());
         }
 
@@ -826,7 +826,7 @@ public class UserController {
             }
         } catch (Exception e) {
             response = ApiResponse.UNKNOWN_ERROR;
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             log.error(e.getMessage());
         }
 
@@ -888,7 +888,7 @@ public class UserController {
             }
         } catch (Exception e) {
             response = ApiResponse.UNKNOWN_ERROR;
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             log.error(e.getMessage());
         }
 

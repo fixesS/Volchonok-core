@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,12 +51,11 @@ public class CourseController {
                 response = ApiResponse.COURSE_DOES_NOT_EXIST;
             }else{
                 response = ApiResponse.OK;
-
             }
 
         }catch (Exception e){
             log.error(e.getMessage(),e.getClass());
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             response = ApiResponse.UNKNOWN_ERROR;
         }
 
@@ -109,12 +109,13 @@ public class CourseController {
                 response = ApiResponse.COURSE_DOES_NOT_EXIST;
             }else{
                 modulesIds = courseService.findAllModulesIdsByCourseId(courseId);
+                Collections.sort(modulesIds);
                 response = ApiResponse.OK;
             }
 
         }catch (Exception e){
             log.error(e.getMessage(),e.getClass());
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             response = ApiResponse.UNKNOWN_ERROR;
         }
 
@@ -148,12 +149,13 @@ public class CourseController {
                 response = ApiResponse.COURSE_DOES_NOT_EXIST;
             }else{
                 lessonsIds = courseService.findAllLessonsIdsByCourseId(courseId);
+                Collections.sort(lessonsIds);
                 response = ApiResponse.OK;
             }
 
         }catch (Exception e){
             log.error(e.getMessage(),e.getClass());
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             response = ApiResponse.UNKNOWN_ERROR;
         }
 
@@ -187,12 +189,13 @@ public class CourseController {
                 response = ApiResponse.COURSE_DOES_NOT_EXIST;
             }else{
                 testsIds = courseService.findAllTestsIdsByCourseId(courseId);
+                Collections.sort(testsIds);
                 response = ApiResponse.OK;
             }
 
         }catch (Exception e){
             log.error(e.getMessage(),e.getClass());
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             response = ApiResponse.UNKNOWN_ERROR;
         }
 
@@ -226,12 +229,13 @@ public class CourseController {
                 response = ApiResponse.COURSE_DOES_NOT_EXIST;
             }else{
                 questionIds = courseService.findAllQuestionIdsByCourseId(courseId);
+                Collections.sort(questionIds);
                 response = ApiResponse.OK;
             }
 
         }catch (Exception e){
             log.error(e.getMessage(),e.getClass());
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             response = ApiResponse.UNKNOWN_ERROR;
         }
 
@@ -290,7 +294,7 @@ public class CourseController {
 
         }catch (Exception e){
             log.error(e.getMessage(),e.getClass());
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             response = ApiResponse.UNKNOWN_ERROR;
         }
 

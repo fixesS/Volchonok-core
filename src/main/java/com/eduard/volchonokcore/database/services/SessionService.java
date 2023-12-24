@@ -3,6 +3,7 @@ package com.eduard.volchonokcore.database.services;
 import com.eduard.volchonokcore.database.entities.Session;
 import com.eduard.volchonokcore.database.repositories.SessionRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class SessionService {
     @Autowired
     private SessionRepository sessionRepository;
@@ -39,6 +41,7 @@ public class SessionService {
         List<Session> sessions = findAll();
         sessions.forEach(session -> {
             if(LocalDateTime.now().isAfter(session.getExpiresIn())){
+                log.info(session.toString());
                 delete(session);
             }
         });

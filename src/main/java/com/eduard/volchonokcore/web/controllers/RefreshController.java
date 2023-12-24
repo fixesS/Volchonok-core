@@ -38,7 +38,7 @@ public class RefreshController {
     @Autowired
     private SessionService sessionService;
 
-    @GetMapping
+    @GetMapping//todo bad practice, will refactor later (GET with BODY)
     @Operation(
             summary = "Refresh",
             description = "Refresh session by refresh_token"
@@ -69,8 +69,9 @@ public class RefreshController {
             }
         }catch (Exception e){
             response = ApiResponse.UNKNOWN_ERROR;
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             log.error(e.getMessage());
+            e.printStackTrace();
         }
 
         switch (response){

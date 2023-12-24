@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,7 +57,7 @@ public class LessonController {
 
         }catch (Exception e){
             log.error(e.getMessage(),e.getClass());
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             response = ApiResponse.UNKNOWN_ERROR;
         }
 
@@ -99,12 +100,13 @@ public class LessonController {
                 response = ApiResponse.TEST_DOES_NOT_EXIST;
             }else{
                 testsIds = testService.findAllIdsByLesson(lesson);
+                Collections.sort(testsIds);
                 response = ApiResponse.OK;
             }
 
         }catch (Exception e){
             log.error(e.getMessage(),e.getClass());
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             response = ApiResponse.UNKNOWN_ERROR;
         }
 

@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.eduard</groupId>
     <artifactId>volchonok-core</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.4-SNAPSHOT</version>
     <name>volchonok-core</name>
     <description>volchonok-core</description>
     <properties>
@@ -91,7 +91,6 @@
             <artifactId>springdoc-openapi-starter-webflux-ui</artifactId>
             <version>2.0.2</version>
         </dependency>
-
     </dependencies>
 
     <build>

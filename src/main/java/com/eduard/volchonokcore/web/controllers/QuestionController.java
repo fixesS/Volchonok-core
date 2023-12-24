@@ -67,7 +67,7 @@ public class QuestionController {
 
         }catch (Exception e){
             log.error(e.getMessage(),e.getClass());
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             response = ApiResponse.UNKNOWN_ERROR;
         }
 

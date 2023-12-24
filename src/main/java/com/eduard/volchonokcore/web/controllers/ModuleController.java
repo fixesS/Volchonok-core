@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -55,7 +56,7 @@ public class ModuleController {
 
         }catch (Exception e){
             log.error(e.getMessage(),e.getClass());
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             response = ApiResponse.UNKNOWN_ERROR;
         }
 
@@ -96,12 +97,13 @@ public class ModuleController {
                 response = ApiResponse.MODULE_DOES_NOT_EXIST;
             }else{
                 lessonsIds = moduleService.findAllLessonsIdsByModuleId(moduleId);
+                Collections.sort(lessonsIds);
                 response = ApiResponse.OK;
             }
 
         }catch (Exception e){
             log.error(e.getMessage(),e.getClass());
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             response = ApiResponse.UNKNOWN_ERROR;
         }
 
@@ -135,12 +137,13 @@ public class ModuleController {
                 response = ApiResponse.MODULE_DOES_NOT_EXIST;
             }else{
                 testsIds = moduleService.findAllTestsIdsByModuleId(moduleId);
+                Collections.sort(testsIds);
                 response = ApiResponse.OK;
             }
 
         }catch (Exception e){
             log.error(e.getMessage(),e.getClass());
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             response = ApiResponse.UNKNOWN_ERROR;
         }
 
@@ -174,12 +177,13 @@ public class ModuleController {
                 response = ApiResponse.MODULE_DOES_NOT_EXIST;
             }else{
                 questionIds = moduleService.findAllQuestionIdsByModuleId(moduleId);
+                Collections.sort(questionIds);
                 response = ApiResponse.OK;
             }
 
         }catch (Exception e){
             log.error(e.getMessage(),e.getClass());
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             response = ApiResponse.UNKNOWN_ERROR;
         }
 

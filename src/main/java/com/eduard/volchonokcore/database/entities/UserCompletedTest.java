@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -17,7 +19,6 @@ public class UserCompletedTest {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer Id;
-
     @Column(name = "user_id")
     private Integer userid;
     @Column(name = "test_id")

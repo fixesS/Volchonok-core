@@ -1,5 +1,6 @@
 package com.eduard.volchonokcore.database.entities;
 
+import com.eduard.volchonokcore.security.encryption.UserDataEncryptor;
 import com.eduard.volchonokcore.security.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -29,10 +30,13 @@ public class User implements UserDetails {//todo ФИО
     private Integer userId;
 
     @Column
+    @Convert(converter = UserDataEncryptor.class)
     private String firstname;
     @Column
+    @Convert(converter = UserDataEncryptor.class)
     private String surname;
     @Column
+    @Convert(converter = UserDataEncryptor.class)
     private String middlename;
     @Column
     private String login;
@@ -46,10 +50,13 @@ public class User implements UserDetails {//todo ФИО
     @Enumerated(EnumType.STRING)
     private Role role;
     @Column
+    @Convert(converter = UserDataEncryptor.class)
     private String phone;
     @Column
+    @Convert(converter = UserDataEncryptor.class)
     private String email;
     @Column
+    @Convert(converter = UserDataEncryptor.class)
     private String address;
     @Column(name = "class")
     private Integer classColumn;

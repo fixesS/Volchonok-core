@@ -70,6 +70,7 @@ public class RegistrationController {//todo
                     .middlename(registrationModel.getMiddlename())
                     .classColumn(registrationModel.getClass_grade())
                     .coins(coins)
+                    .avatar("0")
                     .build();
 
             userService.create(user);
@@ -77,7 +78,7 @@ public class RegistrationController {//todo
             response = ApiResponse.OK;
         } catch (Exception e) {
             response = ApiResponse.UNKNOWN_ERROR;
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             log.error(e.getMessage());
         }
 

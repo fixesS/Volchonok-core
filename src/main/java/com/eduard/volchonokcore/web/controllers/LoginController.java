@@ -55,7 +55,6 @@ public class LoginController {
         GsonParser gsonParser = new GsonParser();
         String body = "";
         ApiResponse response;
-
         User user = userService.findByLogin(authModel.getLogin());
 
         try {
@@ -78,7 +77,7 @@ public class LoginController {
             if(e instanceof BadCredentialsException){
                 response = ApiResponse.USER_DOES_NOT_EXIST;
             }
-            response.setMessage(e.getMessage());
+            //response.setMessage(e.getMessage());
             log.error(e.getMessage());
         }
 
