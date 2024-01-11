@@ -12,12 +12,14 @@ import com.eduard.volchonokcore.web.models.ApiOk;
 import com.eduard.volchonokcore.web.models.RegistrationModel;
 import com.eduard.volchonokcore.web.models.TokenData;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +40,7 @@ public class RefreshController {
     @Autowired
     private SessionService sessionService;
 
-    @GetMapping//todo bad practice, will refactor later (GET with BODY)
+    @PostMapping
     @Operation(
             summary = "Refresh",
             description = "Refresh session by refresh_token"
@@ -49,8 +51,9 @@ public class RefreshController {
         TokenData tokenData = null;
         String body = "";
         GsonParser gsonParser = new GsonParser();
-        Claims claims = jwtService.getRefreshClaims(refreshToken);
+        Claims claims ;
         try {
+            claims = jwtService.getRefreshClaims(refreshToken);
             if (!jwtService.validateRefreshToken(refreshToken) || !claims.getSubject().equals("refresh")) {
                 response = ApiResponse.INVALID_REFRESH_TOKEN;
             } else {
@@ -69,9 +72,11 @@ public class RefreshController {
             }
         }catch (Exception e){
             response = ApiResponse.UNKNOWN_ERROR;
+            if(e instanceof ExpiredJwtException){
+                response = ApiResponse.SESSION_EXPIRED;
+            }
             //response.setMessage(e.getMessage());
             log.error(e.getMessage());
-            e.printStackTrace();
         }
 
         switch (response){

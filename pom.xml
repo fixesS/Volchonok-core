@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.eduard</groupId>
     <artifactId>volchonok-core</artifactId>
-    <version>0.0.4-SNAPSHOT</version>
+    <version>0.0.5-SNAPSHOT</version>
     <name>volchonok-core</name>
     <description>volchonok-core</description>
     <properties>

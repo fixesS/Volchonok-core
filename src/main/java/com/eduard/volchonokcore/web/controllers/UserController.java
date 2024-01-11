@@ -82,12 +82,13 @@ public class UserController {
 
         switch (response){
             case OK -> {
+                log.info(user.toString());
                 UserModel userModel = UserModel.builder()
                         .id(Optional.ofNullable(user.getUserId()).orElse(-1000))
                         .login(Optional.ofNullable(user.getLogin()).orElse(""))
                         .firstname(Optional.ofNullable(user.getFirstname()).orElse(""))
                         .surname(Optional.ofNullable(user.getSurname()).orElse(""))
-                        .midllename(Optional.ofNullable(user.getMiddlename()).orElse(""))
+                        .middlename(Optional.ofNullable(user.getMiddlename()).orElse(""))
                         .avatar(Optional.ofNullable(user.getAvatar()).orElse(""))
                         .level(Optional.ofNullable(user.getLevel()).orElse(-1000))
                         .phone(Optional.ofNullable(user.getPhone()).orElse(""))
@@ -139,7 +140,7 @@ public class UserController {
                     user.setAddress(Optional.ofNullable(userModel.getAddress()).orElse(user.getAddress()));
                     user.setClassColumn(Optional.ofNullable(userModel.getClass_grade()).orElse(user.getClassColumn()));
                     user.setCoins(Optional.ofNullable(userModel.getCoins()).orElse(user.getCoins()));
-                    user.setMiddlename(Optional.ofNullable(userModel.getMidllename()).orElse(""));
+                    user.setMiddlename(Optional.ofNullable(userModel.getMiddlename()).orElse(""));
                     userService.update(user);
                     response = ApiResponse.OK;
                 }

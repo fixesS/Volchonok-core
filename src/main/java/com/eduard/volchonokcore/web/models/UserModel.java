@@ -12,7 +12,7 @@ public class UserModel {
     private String login;
     private String firstname;
     private String surname;
-    private String midllename;
+    private String middlename;
 
     private String avatar;
     private Integer level;

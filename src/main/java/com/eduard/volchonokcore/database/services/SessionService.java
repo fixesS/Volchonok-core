@@ -41,7 +41,6 @@ public class SessionService {
         List<Session> sessions = findAll();
         sessions.forEach(session -> {
             if(LocalDateTime.now().isAfter(session.getExpiresIn())){
-                log.info(session.toString());
                 delete(session);
             }
         });
